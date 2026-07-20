@@ -1,0 +1,96 @@
+generated: '2026-07-19'
+method: searched
+source: https://github.com/lrqdo/developer/blob/master/api.md
+docs: https://github.com/lrqdo/developer
+verified_live: '2026-07-19'
+overview: >-
+  The Food Assembly API authenticates with OAuth 2 bearer tokens issued by the
+  resource-owner password credentials grant, with refresh-token rotation. This
+  profile was read from the provider's own published API Blueprint and confirmed
+  against the live host, which answers 401 with a Bearer challenge. No scopes
+  are published — the documented token response carries "scope": null.
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - password
+  - refresh_token
+schemes:
+- name: oauth2
+  type: oauth2
+  description: >-
+    OAuth 2 with the resource-owner password credentials grant and the
+    refresh-token grant. Access tokens are presented as bearer tokens.
+  flows:
+  - flow: password
+    tokenUrl: https://api.thefoodassembly.com/oauth/v2/token/
+    scopes: 0
+    parameters:
+    - grant_type (value "password")
+    - client_id
+    - client_secret
+    - username
+    - password
+  - flow: refresh_token
+    tokenUrl: https://api.thefoodassembly.com/oauth/v2/token/
+    scopes: 0
+    parameters:
+    - grant_type (value "refresh_token")
+    - refresh_token
+    - client_id
+    - client_secret
+  token:
+    presentation: 'Authorization: Bearer <access_token>'
+    challenge_header: 'WWW-Authenticate: Bearer'
+    challenge_observed: '2026-07-19 at / and /me/'
+    documented_lifetime_seconds: 3600
+    token_type: bearer
+    refresh: >-
+      Every exchange returns a fresh refresh_token; clients must persist the new
+      one and discard the old.
+  sources:
+  - https://github.com/lrqdo/developer/blob/master/api.md
+  - openapi/la-ruche-qui-dit-oui-api-openapi.yml
+  - live probe of https://api.thefoodassembly.com
+scopes:
+  published: false
+  detail: >-
+    No scope registry is documented and the token response returns
+    "scope": null. Authorization is all-or-nothing; least privilege cannot be
+    requested or verified. No scopes/ artifact is emitted for this repo because
+    there is nothing to record.
+public_operations:
+- operation: listDistributionProducts
+  detail: The blueprint marks the distribution product listing as a public route.
+discovery:
+  openid_configuration: absent (404 on the API host)
+  oauth_authorization_server_metadata: absent (404 on the API host)
+  introspection_endpoint: none documented
+  revocation_endpoint: none documented
+  registration: >-
+    No self-service developer registration exists. client_id and client_secret
+    are not obtainable through any published portal — the documentation gives no
+    instructions for requesting credentials.
+posture:
+  rfc6749_compliant: true
+  rfc6750_compliant: true
+  rfc9700_compliant: false
+  concerns:
+  - >-
+    The resource-owner password credentials grant is the only documented grant.
+    RFC 9700 (OAuth 2.0 Security BCP) recommends against it and OAuth 2.1
+    removes it, because it requires every client to handle the end user's
+    password directly.
+  - No PKCE and no authorization code flow are offered.
+  - No scopes, so tokens cannot be constrained to least privilege.
+  - No token introspection or revocation endpoint is documented.
+  - >-
+    No self-service credential issuance, so the API is effectively closed to new
+    integrators regardless of its documentation being public.
+known_drift:
+  probed: '2026-07-19'
+  detail: >-
+    POST https://api.thefoodassembly.com/oauth/v2/token/ returned 404 with the
+    generic problemType envelope, while GET /me/ correctly returned 401 with a
+    Bearer challenge. The resource surface is live and gated but the documented
+    token endpoint no longer resolves at its published path.
