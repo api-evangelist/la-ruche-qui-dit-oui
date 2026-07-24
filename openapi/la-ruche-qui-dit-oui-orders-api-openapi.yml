@@ -1,0 +1,237 @@
+openapi: 3.1.0
+info:
+  title: The Food Assembly Assemblies Orders API
+  description: 'Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider''s own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly ("hive") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.
+
+
+    Provenance: every path, method, field and example below is taken from the provider''s published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.'
+  version: 1A
+  x-source-format: API Blueprint (FORMAT 1A)
+  x-source-document: https://github.com/lrqdo/developer/blob/master/api.md
+  x-generated: '2026-07-19'
+  x-method: generated
+  contact:
+    name: La Ruche qui dit Oui!
+    url: https://laruchequiditoui.fr
+servers:
+- url: https://api.thefoodassembly.com
+  description: 'Production host as declared by the API Blueprint `HOST` directive. Probed 2026-07-19: HTTP 401, `WWW-Authenticate: Bearer`, served via nginx behind CloudFront.'
+security:
+- oauth2: []
+tags:
+- name: Orders
+  description: Basket, orders and payment.
+paths:
+  /orders/:
+    get:
+      operationId: listOrders
+      tags:
+      - Orders
+      summary: Current basket and orders
+      description: The authenticated member's current basket and orders. The `state` attribute carries the order lifecycle (see the `OrderState` schema).
+      responses:
+        '200':
+          description: Baskets and orders for the authenticated member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+        '401':
+          description: Missing or invalid bearer token.
+  /distributions/{id}/basket/confirm/:
+    post:
+      operationId: confirmBasket
+      tags:
+      - Orders
+      summary: Pay a basket
+      description: Confirm and pay the basket for a distribution. The response returns a payment form / payment request to hand off to the payment service provider. Note the path segment is plural (`/distributions/`) here while the product listing route is singular (`/distribution/`) — this inconsistency is present in the provider's own blueprint and is preserved verbatim.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Distribution identifier.
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRedirectUrls'
+            example:
+              urlAccept: https://ppr.thefoodassembly.com/fr/basket/success/456
+              urlDecline: https://ppr.thefoodassembly.com/fr/basket
+              urlCancel: https://ppr.thefoodassembly.com/fr/basket
+      responses:
+        '200':
+          description: Payment hand-off generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentHandoff'
+        '400':
+          description: Order cannot be placed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderError'
+              example:
+                error: MissingUserInformation
+                details: Order cannot be placed because some user information are missing.
+                orderUuid: cce4b7d2-3e1b-45ef-b8a2-467b4db72f96
+  /orders/{id}/payments/:
+    post:
+      operationId: repayOrder
+      tags:
+      - Orders
+      summary: Repay a failed order
+      description: Retry payment for an order whose payment was declined or cancelled.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Order identifier.
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRedirectUrls'
+            example:
+              urlAccept: https://ppr.thefoodassembly.com/fr/basket/success/456
+              urlDecline: https://ppr.thefoodassembly.com/fr/basket
+              urlCancel: https://ppr.thefoodassembly.com/fr/basket
+      responses:
+        '200':
+          description: Order returned with a fresh payment hand-off.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Order cannot be placed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderError'
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          examples:
+          - basket
+          - order
+        state:
+          $ref: '#/components/schemas/OrderState'
+        totalPrice:
+          $ref: '#/components/schemas/Money'
+        countItems:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+        distributionId:
+          type: integer
+        distribution:
+          type: object
+        paymentUrl:
+          type: string
+        paymentForm:
+          type: string
+          description: Pre-rendered HTML form for the payment service provider.
+        paymentRequest:
+          $ref: '#/components/schemas/PaymentRequest'
+    OrderError:
+      type: object
+      description: Order-scoped error envelope used by the payment routes. Distinct from the generic `problemType` envelope observed at the API root.
+      properties:
+        error:
+          type: string
+          examples:
+          - MissingUserInformation
+        details:
+          type: string
+        orderUuid:
+          type: string
+          format: uuid
+    PaymentHandoff:
+      type: object
+      properties:
+        paymentForm:
+          type: string
+        paymentRequest:
+          $ref: '#/components/schemas/PaymentRequest'
+    OrderList:
+      type: object
+      properties:
+        count:
+          type: integer
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    PaymentRequest:
+      type: object
+      description: Payment service provider endpoint plus the pre-signed payload.
+      properties:
+        url:
+          type: string
+          format: uri
+        data:
+          type: string
+    OrderState:
+      type: integer
+      description: Order lifecycle state, per the blueprint's table. 1 = Cart (ongoing order, user is shopping); 2 = Cart locked (user clicked "Pay", payment form generated on PSP side); 3 = Pending (payment in progress, awaiting PSP feedback); 4 = Confirmed (payment successful); 5 = Shipped (distribution over, member got the order); 7 = Canceled (payment denied or canceled). States 6 and 8 are marked n/a in the source.
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 7
+    Money:
+      type: object
+      description: Minor-unit amount plus ISO 4217 currency.
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+          examples:
+          - EUR
+    PaymentRedirectUrls:
+      type: object
+      required:
+      - urlAccept
+      - urlDecline
+      - urlCancel
+      properties:
+        urlAccept:
+          type: string
+          format: uri
+        urlDecline:
+          type: string
+          format: uri
+        urlCancel:
+          type: string
+          format: uri
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: 'OAuth 2 with the resource-owner password credentials grant and the refresh-token grant, as documented in the blueprint. Access tokens are presented as bearer tokens; the live host advertises `WWW-Authenticate: Bearer`. No scopes are documented — the token response carries `"scope": null`.'
+      flows:
+        password:
+          tokenUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          refreshUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          scopes: {}

@@ -1,0 +1,151 @@
+openapi: 3.1.0
+info:
+  title: The Food Assembly Assemblies Authentication API
+  description: 'Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider''s own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly ("hive") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.
+
+
+    Provenance: every path, method, field and example below is taken from the provider''s published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.'
+  version: 1A
+  x-source-format: API Blueprint (FORMAT 1A)
+  x-source-document: https://github.com/lrqdo/developer/blob/master/api.md
+  x-generated: '2026-07-19'
+  x-method: generated
+  contact:
+    name: La Ruche qui dit Oui!
+    url: https://laruchequiditoui.fr
+servers:
+- url: https://api.thefoodassembly.com
+  description: 'Production host as declared by the API Blueprint `HOST` directive. Probed 2026-07-19: HTTP 401, `WWW-Authenticate: Bearer`, served via nginx behind CloudFront.'
+security:
+- oauth2: []
+tags:
+- name: Authentication
+  description: OAuth 2 token issuance.
+paths:
+  /oauth/v2/token/:
+    post:
+      operationId: createToken
+      tags:
+      - Authentication
+      summary: Create Token
+      description: Create a new access token by submitting a username/password pair or a refresh token.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PasswordGrantRequest'
+              - $ref: '#/components/schemas/RefreshTokenGrantRequest'
+            examples:
+              password:
+                summary: Request username and password
+                value:
+                  grant_type: password
+                  client_id: example-client-id
+                  client_secret: example-client-secret
+                  username: test@example.org
+                  password: passw123
+              refreshToken:
+                summary: Request refresh token
+                value:
+                  grant_type: refresh_token
+                  refresh_token: some-refresh-token
+                  client_id: example-client-id
+                  client_secret: example-client-secret
+      responses:
+        '200':
+          description: Token issued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+              example:
+                access_token: some_access_token
+                expires_in: 3600
+                token_type: bearer
+                scope: null
+                refresh_token: some_refresh_token
+        '400':
+          description: Invalid grant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthError'
+              example:
+                error: invalid_grant
+components:
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds. Documented example is 3600.
+        token_type:
+          type: string
+          examples:
+          - bearer
+        scope:
+          type:
+          - string
+          - 'null'
+          description: Null in the documented example; no scope registry is published.
+        refresh_token:
+          type: string
+    OAuthError:
+      type: object
+      properties:
+        error:
+          type: string
+          examples:
+          - invalid_grant
+    RefreshTokenGrantRequest:
+      type: object
+      required:
+      - grant_type
+      - refresh_token
+      - client_id
+      - client_secret
+      properties:
+        grant_type:
+          type: string
+          const: refresh_token
+        refresh_token:
+          type: string
+        client_id:
+          type: string
+        client_secret:
+          type: string
+    PasswordGrantRequest:
+      type: object
+      required:
+      - grant_type
+      - client_id
+      - client_secret
+      - username
+      - password
+      properties:
+        grant_type:
+          type: string
+          const: password
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: 'OAuth 2 with the resource-owner password credentials grant and the refresh-token grant, as documented in the blueprint. Access tokens are presented as bearer tokens; the live host advertises `WWW-Authenticate: Bearer`. No scopes are documented — the token response carries `"scope": null`.'
+      flows:
+        password:
+          tokenUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          refreshUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          scopes: {}

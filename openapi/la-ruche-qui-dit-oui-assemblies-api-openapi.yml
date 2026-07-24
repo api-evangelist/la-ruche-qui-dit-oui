@@ -1,0 +1,82 @@
+openapi: 3.1.0
+info:
+  title: The Food Assembly Assemblies API
+  description: 'Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider''s own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly ("hive") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.
+
+
+    Provenance: every path, method, field and example below is taken from the provider''s published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.'
+  version: 1A
+  x-source-format: API Blueprint (FORMAT 1A)
+  x-source-document: https://github.com/lrqdo/developer/blob/master/api.md
+  x-generated: '2026-07-19'
+  x-method: generated
+  contact:
+    name: La Ruche qui dit Oui!
+    url: https://laruchequiditoui.fr
+servers:
+- url: https://api.thefoodassembly.com
+  description: 'Production host as declared by the API Blueprint `HOST` directive. Probed 2026-07-19: HTTP 401, `WWW-Authenticate: Bearer`, served via nginx behind CloudFront.'
+security:
+- oauth2: []
+tags:
+- name: Assemblies
+  description: Assembly ("hive") membership for the authenticated member.
+paths:
+  /me/:
+    get:
+      operationId: getMemberships
+      tags:
+      - Assemblies
+      summary: Memberships
+      description: Request user information to find out if user is member of one or several assemblies.
+      responses:
+        '200':
+          description: Membership information for the authenticated member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Memberships'
+              example:
+                isMember: true
+                hivesAsMember:
+                - id: 123
+                  name: Le Comptoir Général
+                  status: open
+                  joinedAt: '2015-04-26T17:25:47+02:00'
+        '401':
+          description: 'Missing or invalid bearer token. Observed live 2026-07-19 with `WWW-Authenticate: Bearer`.'
+components:
+  schemas:
+    Hive:
+      type: object
+      description: An assembly ("hive") the member belongs to.
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+          examples:
+          - open
+        joinedAt:
+          type: string
+          format: date-time
+    Memberships:
+      type: object
+      properties:
+        isMember:
+          type: boolean
+        hivesAsMember:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hive'
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: 'OAuth 2 with the resource-owner password credentials grant and the refresh-token grant, as documented in the blueprint. Access tokens are presented as bearer tokens; the live host advertises `WWW-Authenticate: Bearer`. No scopes are documented — the token response carries `"scope": null`.'
+      flows:
+        password:
+          tokenUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          refreshUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          scopes: {}

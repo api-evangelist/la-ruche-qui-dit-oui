@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: The Food Assembly Assemblies Sale API
+  description: 'Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider''s own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly ("hive") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.
+
+
+    Provenance: every path, method, field and example below is taken from the provider''s published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.'
+  version: 1A
+  x-source-format: API Blueprint (FORMAT 1A)
+  x-source-document: https://github.com/lrqdo/developer/blob/master/api.md
+  x-generated: '2026-07-19'
+  x-method: generated
+  contact:
+    name: La Ruche qui dit Oui!
+    url: https://laruchequiditoui.fr
+servers:
+- url: https://api.thefoodassembly.com
+  description: 'Production host as declared by the API Blueprint `HOST` directive. Probed 2026-07-19: HTTP 401, `WWW-Authenticate: Bearer`, served via nginx behind CloudFront.'
+security:
+- oauth2: []
+tags:
+- name: Sale
+  description: Products and offers on sale for a distribution.
+paths:
+  /distribution/{id}/products/:
+    get:
+      operationId: listDistributionProducts
+      tags:
+      - Sale
+      summary: Products for sale
+      description: Products and their offers on sale for a distribution. The blueprint marks this route as public (no authentication required).
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Distribution identifier.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Products on sale for the distribution.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              example:
+              - id: 71175
+                name: cerises bigarreaux
+                description: Cerises bigarreaux de l'Yonne
+                freshness: 1
+                composition: null
+                dfsp_priority: 28
+                type:
+                  id: 225
+                  quantityUnit: mg
+                  quantityStrategy: weight
+                farmId: 2893
+                photoId: 5478488b5f4271bf76edfd3e
+                storageLife:
+                  amount: '2'
+                  unit: days
+                offers:
+                - id: 284201
+                  count: null
+                  quantity:
+                    amount: 2000000
+                    unit: mg
+                  price:
+                    amount: 780
+                    currency: EUR
+                  availableStock: unlimited
+components:
+  schemas:
+    ProductType:
+      type: object
+      properties:
+        id:
+          type: integer
+        quantityUnit:
+          type: string
+          examples:
+          - mg
+        quantityStrategy:
+          type: string
+          examples:
+          - weight
+    Offer:
+      type: object
+      properties:
+        id:
+          type: integer
+        count:
+          type:
+          - integer
+          - 'null'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        price:
+          $ref: '#/components/schemas/Money'
+        availableStock:
+          type:
+          - string
+          - integer
+          description: Documented example uses the string `unlimited`.
+    StorageLife:
+      type: object
+      properties:
+        amount:
+          type: string
+        unit:
+          type: string
+          examples:
+          - days
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        freshness:
+          type:
+          - integer
+          - 'null'
+        composition:
+          type:
+          - string
+          - 'null'
+        dfsp_priority:
+          type:
+          - integer
+          - 'null'
+        type:
+          $ref: '#/components/schemas/ProductType'
+        farmId:
+          type: integer
+          description: Reference to the producing farm.
+        photoId:
+          type:
+          - string
+          - 'null'
+        storageLife:
+          $ref: '#/components/schemas/StorageLife'
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offer'
+    Quantity:
+      type: object
+      properties:
+        amount:
+          type: integer
+        unit:
+          type: string
+    Money:
+      type: object
+      description: Minor-unit amount plus ISO 4217 currency.
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+          examples:
+          - EUR
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: 'OAuth 2 with the resource-owner password credentials grant and the refresh-token grant, as documented in the blueprint. Access tokens are presented as bearer tokens; the live host advertises `WWW-Authenticate: Bearer`. No scopes are documented — the token response carries `"scope": null`.'
+      flows:
+        password:
+          tokenUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          refreshUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          scopes: {}
