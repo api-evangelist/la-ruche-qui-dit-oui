@@ -1,0 +1,118 @@
+generated: '2026-07-19'
+method: derived
+source: >-
+  openapi/la-ruche-qui-dit-oui-api-openapi.yml, conventions/,
+  security/la-ruche-qui-dit-oui-domain-security.yml, and live probes 2026-07-19
+summary: >-
+  Cross-cutting standards assertions for The Food Assembly API. The provider
+  publishes no compliance or certification programme, so every entry below is
+  derived from observable behaviour rather than a provider claim. No
+  certifications are asserted.
+standards:
+- id: oauth2
+  name: OAuth 2.0 (RFC 6749)
+  conforms: true
+  evidence: >-
+    Token endpoint implements the resource-owner password credentials grant and
+    the refresh-token grant with client_id/client_secret, returning the standard
+    access_token / token_type / expires_in / refresh_token response and the
+    standard {"error": "invalid_grant"} error object.
+  caveat: >-
+    The password grant is discouraged by RFC 9700 (OAuth 2.0 Security Best
+    Current Practice) and is omitted from OAuth 2.1. No PKCE, no authorization
+    code flow, and no scopes are documented.
+- id: rfc6750
+  name: OAuth 2.0 Bearer Token Usage (RFC 6750)
+  conforms: true
+  evidence: >-
+    Live host returns 401 with the `WWW-Authenticate: Bearer` challenge header.
+- id: rfc9700
+  name: OAuth 2.0 Security Best Current Practice
+  conforms: false
+  evidence: >-
+    Relies on the resource-owner password credentials grant, which RFC 9700
+    explicitly recommends against. No authorization code + PKCE flow is offered.
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: >-
+    No id_token, no /.well-known/openid-configuration (404 on the API host), no
+    OIDC claims documented.
+- id: rfc8414
+  name: OAuth 2.0 Authorization Server Metadata (RFC 8414)
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returns 404 on the API host.
+- id: rfc9457
+  name: Problem Details for HTTP APIs (RFC 9457 / RFC 7807)
+  conforms: false
+  evidence: >-
+    Errors use a proprietary {problemType, title, detail} envelope served as
+    application/json, not application/problem+json, and the member field is
+    `problemType` rather than `type`. See errors/la-ruche-qui-dit-oui-problem-types.yml.
+- id: rfc9116
+  name: security.txt (RFC 9116)
+  conforms: false
+  evidence: No /.well-known/security.txt on either host.
+- id: rfc8594
+  name: Sunset HTTP Header (RFC 8594)
+  conforms: false
+  evidence: No Sunset or Deprecation headers observed; no deprecation policy published.
+- id: pagination
+  name: Collection pagination
+  conforms: false
+  evidence: >-
+    No limit/offset/cursor parameters or Link headers on any collection route.
+- id: idempotency
+  name: Idempotent request replay
+  conforms: false
+  evidence: >-
+    No idempotency key mechanism, despite non-idempotent payment operations
+    (confirmBasket, repayOrder).
+- id: json-api
+  name: 'JSON:API'
+  conforms: false
+  evidence: >-
+    Responses are ad-hoc JSON objects and bare arrays; no data/attributes
+    envelope, no type members, no application/vnd.api+json.
+- id: hal
+  name: HAL (Hypertext Application Language)
+  conforms: false
+  evidence: >-
+    No _links or _embedded members in any documented response. Noted because the
+    provider maintains HAL tooling (lrqdo/hal, lrqdo/RestHalBundle) — the
+    documented public API does not use it.
+- id: tls13
+  name: TLS 1.3
+  conforms: true
+  evidence: >-
+    Both laruchequiditoui.fr and api.thefoodassembly.com negotiate TLSv1.3
+    (probed 2026-07-19).
+- id: dmarc
+  name: DMARC email authentication
+  conforms: true
+  evidence: >-
+    laruchequiditoui.fr publishes DMARC with p=reject; SPF present on both
+    domains. thefoodassembly.com DMARC policy is p=none.
+- id: dnssec
+  name: DNSSEC
+  conforms: false
+  evidence: No DNSKEY records on laruchequiditoui.fr or thefoodassembly.com.
+- id: caa
+  name: CAA certificate authority authorization
+  conforms: false
+  evidence: No CAA records on either registrable domain.
+- id: psd2
+  name: PSD2 / SCA
+  conforms: unknown
+  evidence: >-
+    The provider's llms.txt states "For EU customers, PSD2 and local payment
+    standards apply where relevant", but the API itself delegates payment to a
+    PSP hand-off and asserts nothing about SCA. Recorded as the provider's
+    consumer-facing statement, not an API conformance claim.
+certifications: []
+certifications_note: >-
+  No SOC 2, ISO 27001, PCI DSS or other certification is published. No trust
+  centre exists (probed 2026-07-19). Card handling is delegated to a payment
+  service provider, which is consistent with the provider not holding PCI scope
+  itself, but no attestation is published either way. No `Compliance` pointer is
+  emitted for this repo because there is no published compliance programme.

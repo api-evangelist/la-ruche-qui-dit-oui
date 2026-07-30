@@ -1,0 +1,81 @@
+generated: '2026-07-19'
+method: derived
+source: >-
+  openapi/la-ruche-qui-dit-oui-api-openapi.yml, the provider's lrqdo/developer
+  repository history, and live probes on 2026-07-19
+summary: >-
+  The provider publishes no versioning policy, no deprecation policy and no
+  status page. What follows is observed lifecycle evidence only — dates, probe
+  results and corporate events — not a policy the provider has committed to.
+published_policies:
+  versioning_policy: none
+  deprecation_policy: none
+  sunset_headers: none_observed
+  sla: none
+  status_page: none
+  note: >-
+    Probed status.laruchequiditoui.fr (does not resolve) and searched the site
+    and support centre; no status or incident page was found. The site does
+    expose a customer-facing incident *reporting* form at
+    /en/open-incident, which is a support intake, not a status page.
+versioning:
+  scheme: unversioned
+  detail: >-
+    No version segment in the API path. `/oauth/v2/` versions the OAuth bundle,
+    not the API. The blueprint's `FORMAT: 1A` is the API Blueprint format
+    version.
+documentation_state:
+  source: https://github.com/lrqdo/developer
+  last_updated: '2017-04-06'
+  archived: false
+  detail: >-
+    The public API documentation repository has not been pushed to since April
+    2017. It is not archived and GitHub Pages is still serving it at
+    lrqdo.github.io/developer/, so it remains publicly reachable while being
+    nine years stale.
+runtime_state:
+  host: https://api.thefoodassembly.com
+  probed: '2026-07-19'
+  reachable: true
+  observations:
+  - 'GET / -> 401, WWW-Authenticate: Bearer, server: nginx via CloudFront'
+  - GET /me/ -> 401 (documented route still gated, not removed)
+  - GET /distribution/1/products/ -> 404 with the generic problemType envelope
+  - POST /oauth/v2/token/ -> 404 with the generic problemType envelope
+  assessment: >-
+    The host is alive and authenticating, but two of the blueprint's documented
+    routes — including the token endpoint — now return 404. The documented
+    contract has drifted from the deployed one. Treat the published blueprint as
+    historical reference, not as a current integration contract.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No operation is marked deprecated in the source documentation. This reflects
+  the absence of a deprecation practice, not the absence of drift — see the
+  runtime observations above.
+corporate_events:
+- date: '2010'
+  event: Company founded in Paris as La Ruche qui dit Oui!.
+- date: '2017-04-06'
+  event: Last update to the public API documentation (lrqdo/developer).
+- date: '2025-05'
+  event: >-
+    Merger with CrowdFarming. The provider's own llms.txt states the French
+    operations continue under the La Ruche qui dit Oui! brand following the
+    merger. thefoodassembly.com now redirects to crowdfarming.com, and the
+    support centre for La Ruche qui dit Oui! is hosted at
+    support.crowdfarming.com.
+- date: '2026-07-19'
+  event: >-
+    API Evangelist enrichment probe. Website serving the merged CrowdFarming
+    commerce platform under the laruchequiditoui.fr domain; legacy API host
+    still answering.
+risks:
+- >-
+  No status page and no SLA: consumers have no channel for planned or unplanned
+  availability communication.
+- >-
+  No deprecation policy and no Sunset/Deprecation header practice: routes can
+  disappear without notice, and demonstrably have.
+- >-
+  Documentation-to-runtime drift is already material — the documented token
+  endpoint 404s.

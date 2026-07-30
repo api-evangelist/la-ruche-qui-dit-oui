@@ -1,0 +1,56 @@
+generated: '2026-07-19'
+method: searched
+source: live probes of the apis.yml website host and the OpenAPI servers[] host
+summary: >-
+  No /.well-known/ discovery documents are published on either host. The website
+  host sits behind a WAF that returns 403 to unmatched paths (it returns 200 for
+  real paths such as /robots.txt and /llms.txt with a browser User-Agent, so the
+  403s are genuine "no such document" responses rather than a blanket block).
+  The API host returns a clean 404 for every probed path. No security.txt, no
+  OIDC or OAuth authorization-server metadata, no API catalog, no ai-plugin.
+  Recorded so a later re-run can detect a change.
+documents_found: 0
+hosts:
+- host: https://laruchequiditoui.fr
+  note: >-
+    WAF-fronted marketing/commerce host. Probed with a browser User-Agent;
+    unmatched paths answer 403.
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+  - path: /.well-known/ai-plugin.json
+    status: 403
+- host: https://api.thefoodassembly.com
+  note: >-
+    Live API host (nginx behind CloudFront). Root answers 401 with
+    WWW-Authenticate: Bearer.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+related_discovery:
+- path: /llms.txt
+  host: https://laruchequiditoui.fr
+  status: 200
+  note: >-
+    Published and captured verbatim at llms/la-ruche-qui-dit-oui-llms.txt. Not a
+    /.well-known/ document but the provider's only machine-facing discovery file.
+- path: /robots.txt
+  host: https://laruchequiditoui.fr
+  status: 200
+  note: >-
+    Disallows /api/, /services/, /auth/ and /*/v2/; explicitly allows /llms.txt.
+    Sitemap index at /sitemap/sitemap-lr.xml.

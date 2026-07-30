@@ -1,0 +1,20 @@
+{
+  "provider": "la-ruche-qui-dit-oui",
+  "sources": [
+    "la-ruche-qui-dit-oui-assemblies-api-openapi.yml",
+    "la-ruche-qui-dit-oui-authentication-api-openapi.yml",
+    "la-ruche-qui-dit-oui-orders-api-openapi.yml",
+    "la-ruche-qui-dit-oui-sale-api-openapi.yml"
+  ],
+  "outputs": [
+    "la-ruche-qui-dit-oui-assemblies-api-openapi.yml",
+    "la-ruche-qui-dit-oui-authentication-api-openapi.yml",
+    "la-ruche-qui-dit-oui-orders-api-openapi.yml",
+    "la-ruche-qui-dit-oui-sale-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

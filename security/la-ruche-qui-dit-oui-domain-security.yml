@@ -1,0 +1,27 @@
+generated: '2026-07-19'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: laruchequiditoui.fr
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  8 23:59:59 2026 GMT
+  hsts: null
+- host: api.thefoodassembly.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Feb 22 23:59:59 2027 GMT
+  hsts: null
+domains:
+- domain: laruchequiditoui.fr
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: thefoodassembly.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none

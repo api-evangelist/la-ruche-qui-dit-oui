@@ -1,0 +1,108 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/la-ruche-qui-dit-oui-api-openapi.yml (from the provider's published API Blueprint)
+      plus live responses observed from https://api.thefoodassembly.com on 2026-07-19
+format: proprietary
+rfc9457: false
+rfc9457_note: >-
+  The API does NOT implement RFC 9457 / RFC 7807. Two distinct error envelopes
+  are in use and neither is served as application/problem+json. The generic
+  envelope uses the key `problemType` rather than RFC 7807's `type`, and the
+  order-scoped envelope is a flat `error`/`details` shape. The provider's own
+  lrqdo/RestProblemBundle repository ("Allow to manage Rest Problems with
+  Symfony2") is the likely origin of the `problemType` envelope.
+envelopes:
+- name: generic
+  content_type: application/json
+  observed_live: true
+  observed_at: '2026-07-19'
+  example: '{"problemType":"/exception","title":"","detail":[]}'
+  fields:
+  - name: problemType
+    description: >-
+      Problem type identifier as a relative path. Only the value `/exception`
+      was observed; no registry of problem types is published.
+  - name: title
+    description: Short human-readable summary. Empty in every observed response.
+  - name: detail
+    description: Array of further detail. Empty in every observed response.
+- name: order
+  content_type: application/json
+  observed_live: false
+  source: API Blueprint 400 responses on the payment routes
+  fields:
+  - name: error
+    description: Machine-readable error code, e.g. MissingUserInformation.
+  - name: details
+    description: Human-readable explanation.
+  - name: orderUuid
+    description: UUID of the order the error relates to.
+- name: oauth
+  content_type: application/json
+  observed_live: false
+  source: API Blueprint 400 response on the token endpoint
+  note: Standard OAuth 2 (RFC 6749 section 5.2) error object.
+  fields:
+  - name: error
+    description: OAuth 2 error code, e.g. invalid_grant.
+problem_types:
+- id: exception
+  status: 404
+  envelope: generic
+  problemType: /exception
+  title: Unhandled exception
+  detail: >-
+    Returned for unrouted or unmatched paths. Observed live at
+    /distribution/1/products/ and /oauth/v2/token/ (the blueprint's documented
+    paths no longer resolve on the current deployment, suggesting the routing
+    has moved on since the 2017 documentation).
+  remediation: >-
+    Confirm the path against a current deployment; the published blueprint is
+    from 2017 and its routes are not guaranteed to still be mounted.
+  evidence: live probe 2026-07-19
+- id: unauthorized
+  status: 401
+  envelope: generic
+  title: Unauthorized
+  detail: >-
+    Returned when no valid bearer token is presented. Response carries
+    `WWW-Authenticate: Bearer`.
+  remediation: >-
+    Obtain an access token from the OAuth 2 token endpoint using the password or
+    refresh_token grant, then send it as `Authorization: Bearer <token>`.
+  evidence: live probe 2026-07-19 of / and /me/
+- id: invalid_grant
+  status: 400
+  envelope: oauth
+  code: invalid_grant
+  title: Invalid grant
+  detail: >-
+    The supplied username/password pair or refresh token was not accepted, or
+    the client credentials are wrong.
+  remediation: Re-authenticate the user, or exchange a fresh refresh token.
+  operations:
+  - createToken
+  evidence: openapi/la-ruche-qui-dit-oui-api-openapi.yml
+- id: MissingUserInformation
+  status: 400
+  envelope: order
+  code: MissingUserInformation
+  title: Missing user information
+  detail: Order cannot be placed because some user information are missing.
+  remediation: >-
+    Complete the member's profile (the blueprint does not enumerate which fields
+    are required) and retry the basket confirmation or repayment.
+  operations:
+  - confirmBasket
+  - repayOrder
+  evidence: openapi/la-ruche-qui-dit-oui-api-openapi.yml
+gaps:
+- >-
+  No published error-code registry. `MissingUserInformation` is the only
+  order-error code documented, and the blueprint gives no exhaustive list.
+- >-
+  The generic envelope's `title` and `detail` were empty in every observed
+  response, so the envelope carries no actionable information today.
+- >-
+  No error documentation exists for the current CrowdFarming-era platform; the
+  only error reference is the 2017 blueprint.

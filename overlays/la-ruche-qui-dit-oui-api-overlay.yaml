@@ -1,0 +1,140 @@
+overlay: 1.0.0
+info:
+  title: La Ruche qui dit Oui! — API Evangelist enhancements
+  version: 1.0.0
+  description: >-
+    OpenAPI Overlay capturing API Evangelist's enrichment of The Food Assembly
+    API description. The base document is itself a faithful conversion of the
+    provider's published API Blueprint; this overlay adds only the annotations
+    we contribute — agentic action classification, runtime-drift warnings, and
+    cross-links to the derived artifacts in this repository. It never restates
+    provider content as our own and never mutates the base document.
+  x-generated: '2026-07-19'
+  x-method: generated
+  x-source: openapi/la-ruche-qui-dit-oui-api-openapi.yml
+extends: ../openapi/la-ruche-qui-dit-oui-api-openapi.yml
+actions:
+- target: $.info
+  description: Cross-link the derived artifacts and flag documentation staleness.
+  update:
+    x-api-evangelist:
+      repo: https://github.com/api-evangelist/la-ruche-qui-dit-oui
+      artifacts:
+        conventions: conventions/la-ruche-qui-dit-oui-conventions.yml
+        errors: errors/la-ruche-qui-dit-oui-problem-types.yml
+        authentication: authentication/la-ruche-qui-dit-oui-authentication.yml
+        lifecycle: lifecycle/la-ruche-qui-dit-oui-lifecycle.yml
+        conformance: conformance/la-ruche-qui-dit-oui-conformance.yml
+        data_model: data-model/la-ruche-qui-dit-oui-data-model.yml
+    x-documentation-staleness:
+      source_last_updated: '2017-04-06'
+      probed: '2026-07-19'
+      status: stale
+      detail: >-
+        The provider's documentation has not changed since 2017 while the
+        deployment has moved on. Verify every route before integrating.
+- target: $.info
+  description: Record the absence of a published lifecycle and support contract.
+  update:
+    x-lifecycle:
+      versioning_policy: none
+      deprecation_policy: none
+      status_page: none
+      sla: none
+- target: $.paths['/oauth/v2/token/'].post
+  description: Warn that the documented token endpoint no longer resolves.
+  update:
+    x-runtime-drift:
+      probed: '2026-07-19'
+      observed_status: 404
+      observed_body: '{"problemType":"/exception","title":"","detail":[]}'
+      detail: >-
+        The documented token endpoint returned 404 on the live host. Token
+        acquisition as documented is not currently reproducible.
+    x-agentic-access:
+      action_class: authenticate
+      consequence: credential_exchange
+      escalation: never_autonomous
+      detail: >-
+        Password grant requires handling end-user credentials directly. An agent
+        should never collect or replay these; broker a token out of band.
+- target: $.paths['/me/'].get
+  description: Classify the membership lookup for agentic access.
+  update:
+    x-agentic-access:
+      action_class: read
+      consequence: none
+      scope: member_profile
+      escalation: none
+- target: $.paths['/distribution/{id}/products/'].get
+  description: Classify the public catalogue read and record drift.
+  update:
+    x-agentic-access:
+      action_class: read
+      consequence: none
+      scope: public_catalogue
+      escalation: none
+    x-runtime-drift:
+      probed: '2026-07-19'
+      observed_status: 404
+      detail: Documented public route returned 404 for distribution id 1 on the live host.
+- target: $.paths['/orders/'].get
+  description: Classify the order listing and note the missing pagination contract.
+  update:
+    x-agentic-access:
+      action_class: read
+      consequence: none
+      scope: member_orders
+      escalation: none
+    x-pagination:
+      supported: false
+      detail: >-
+        Returns a count plus the full orders array with no limit, offset or
+        cursor parameter. Unbounded response growth is a real risk for
+        long-tenured members.
+- target: $.paths['/distributions/{id}/basket/confirm/'].post
+  description: Flag basket confirmation as an unguarded money-movement operation.
+  update:
+    x-agentic-access:
+      action_class: write
+      consequence: money_movement
+      scope: member_orders
+      escalation: human_confirmation_required
+    x-idempotency:
+      supported: false
+      risk: high
+      detail: >-
+        No idempotency key is accepted. A retried or replayed confirmation has
+        no documented protection against generating a duplicate payment
+        hand-off. Do not retry automatically.
+- target: $.paths['/orders/{id}/payments/'].post
+  description: Flag order repayment as an unguarded money-movement operation.
+  update:
+    x-agentic-access:
+      action_class: write
+      consequence: money_movement
+      scope: member_orders
+      escalation: human_confirmation_required
+    x-idempotency:
+      supported: false
+      risk: high
+      detail: >-
+        No idempotency key is accepted on a retry-shaped operation. Repayment is
+        by definition invoked after a failure, which is exactly when blind
+        retries cause double charges.
+- target: $.components.securitySchemes.oauth2
+  description: Record the security posture of the documented grant.
+  update:
+    x-security-posture:
+      rfc9700_compliant: false
+      detail: >-
+        Resource-owner password credentials grant only. RFC 9700 recommends
+        against it and OAuth 2.1 removes it. No PKCE, no authorization code
+        flow, no scopes.
+- target: $.components.schemas.OrderState
+  description: Note the redundant status/state pair.
+  update:
+    x-modelling-note: >-
+      Orders carry both a numeric `state` enum and a coarser string `status`
+      (basket / order). The two overlap; `state` is the authoritative lifecycle
+      value.

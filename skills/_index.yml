@@ -1,0 +1,50 @@
+generated: '2026-07-19'
+method: generated
+source: openapi/la-ruche-qui-dit-oui-api-openapi.yml
+summary: >-
+  Packaged Agent Skills for The Food Assembly API. The provider publishes no
+  skills, no AGENTS.md and no agent-facing documentation (searched the lrqdo
+  GitHub organisation and the live sites on 2026-07-19), so these are generated
+  from the provider's own API Blueprint. Every operationId referenced below
+  exists in openapi/la-ruche-qui-dit-oui-api-openapi.yml.
+skills:
+- name: la-ruche-qui-dit-oui-browse-distribution-catalogue
+  file: la-ruche-qui-dit-oui-browse-distribution-catalogue.md
+  description: >-
+    Read the public product and offer catalogue for a distribution and decode the
+    minor-unit price and base-unit quantity representations.
+  operations:
+  - listDistributionProducts
+  read_only: true
+- name: la-ruche-qui-dit-oui-authenticate-and-read-membership
+  file: la-ruche-qui-dit-oui-authenticate-and-read-membership.md
+  description: >-
+    Acquire and rotate an OAuth 2 token and read the member's assembly (hive)
+    memberships, with the credential-handling rules the password grant demands.
+  operations:
+  - createToken
+  - getMemberships
+  read_only: true
+- name: la-ruche-qui-dit-oui-checkout-and-pay-basket
+  file: la-ruche-qui-dit-oui-checkout-and-pay-basket.md
+  description: >-
+    Read basket and order state, confirm a basket into a payment service provider
+    hand-off, and retry a failed payment.
+  operations:
+  - listOrders
+  - confirmBasket
+  - repayOrder
+  read_only: false
+  consequence: money_movement
+  escalation: human_confirmation_required
+cross_cutting_warnings:
+- >-
+  No idempotency mechanism exists on a surface that includes money-moving
+  operations. Agents must not retry confirmBasket or repayOrder.
+- >-
+  The only documented OAuth grant is the resource-owner password credentials
+  grant. Agents must never handle end-user passwords directly.
+- >-
+  The provider's documentation was last updated 2017-04-06 and has drifted from
+  the live deployment; two documented routes returned 404 when probed
+  2026-07-19.

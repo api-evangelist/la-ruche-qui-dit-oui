@@ -1,0 +1,534 @@
+openapi: 3.1.0
+info:
+  title: The Food Assembly API
+  description: >-
+    Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This
+    OpenAPI description is a faithful conversion of the provider's own published
+    API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2
+    token issuance, assembly ("hive") membership lookup, the public product /
+    offer listing for a distribution, and the basket + order payment flow.
+
+
+    Provenance: every path, method, field and example below is taken from the
+    provider's published API Blueprint. Nothing has been invented. The blueprint
+    was last updated 2017-04-06; the host `api.thefoodassembly.com` was still
+    answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401`
+    at `/me/`), so the surface is live but the documentation is unmaintained.
+  version: '1A'
+  x-source-format: API Blueprint (FORMAT 1A)
+  x-source-document: https://github.com/lrqdo/developer/blob/master/api.md
+  x-generated: '2026-07-19'
+  x-method: generated
+  contact:
+    name: La Ruche qui dit Oui!
+    url: https://laruchequiditoui.fr
+servers:
+  - url: https://api.thefoodassembly.com
+    description: >-
+      Production host as declared by the API Blueprint `HOST` directive.
+      Probed 2026-07-19: HTTP 401, `WWW-Authenticate: Bearer`, served via nginx
+      behind CloudFront.
+tags:
+  - name: Authentication
+    description: OAuth 2 token issuance.
+  - name: Assemblies
+    description: Assembly ("hive") membership for the authenticated member.
+  - name: Sale
+    description: Products and offers on sale for a distribution.
+  - name: Orders
+    description: Basket, orders and payment.
+paths:
+  /oauth/v2/token/:
+    post:
+      operationId: createToken
+      tags: [Authentication]
+      summary: Create Token
+      description: >-
+        Create a new access token by submitting a username/password pair or a
+        refresh token.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PasswordGrantRequest'
+                - $ref: '#/components/schemas/RefreshTokenGrantRequest'
+            examples:
+              password:
+                summary: Request username and password
+                value:
+                  grant_type: password
+                  client_id: example-client-id
+                  client_secret: example-client-secret
+                  username: test@example.org
+                  password: passw123
+              refreshToken:
+                summary: Request refresh token
+                value:
+                  grant_type: refresh_token
+                  refresh_token: some-refresh-token
+                  client_id: example-client-id
+                  client_secret: example-client-secret
+      responses:
+        '200':
+          description: Token issued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+              example:
+                access_token: some_access_token
+                expires_in: 3600
+                token_type: bearer
+                scope: null
+                refresh_token: some_refresh_token
+        '400':
+          description: Invalid grant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthError'
+              example:
+                error: invalid_grant
+  /me/:
+    get:
+      operationId: getMemberships
+      tags: [Assemblies]
+      summary: Memberships
+      description: >-
+        Request user information to find out if user is member of one or several
+        assemblies.
+      responses:
+        '200':
+          description: Membership information for the authenticated member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Memberships'
+              example:
+                isMember: true
+                hivesAsMember:
+                  - id: 123
+                    name: Le Comptoir Général
+                    status: open
+                    joinedAt: '2015-04-26T17:25:47+02:00'
+        '401':
+          description: >-
+            Missing or invalid bearer token. Observed live 2026-07-19 with
+            `WWW-Authenticate: Bearer`.
+  /distribution/{id}/products/:
+    get:
+      operationId: listDistributionProducts
+      tags: [Sale]
+      summary: Products for sale
+      description: >-
+        Products and their offers on sale for a distribution. The blueprint
+        marks this route as public (no authentication required).
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Distribution identifier.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Products on sale for the distribution.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              example:
+                - id: 71175
+                  name: cerises bigarreaux
+                  description: Cerises bigarreaux de l'Yonne
+                  freshness: 1
+                  composition: null
+                  dfsp_priority: 28
+                  type:
+                    id: 225
+                    quantityUnit: mg
+                    quantityStrategy: weight
+                  farmId: 2893
+                  photoId: 5478488b5f4271bf76edfd3e
+                  storageLife:
+                    amount: '2'
+                    unit: days
+                  offers:
+                    - id: 284201
+                      count: null
+                      quantity:
+                        amount: 2000000
+                        unit: mg
+                      price:
+                        amount: 780
+                        currency: EUR
+                      availableStock: unlimited
+  /orders/:
+    get:
+      operationId: listOrders
+      tags: [Orders]
+      summary: Current basket and orders
+      description: >-
+        The authenticated member's current basket and orders. The `state`
+        attribute carries the order lifecycle (see the `OrderState` schema).
+      responses:
+        '200':
+          description: Baskets and orders for the authenticated member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+        '401':
+          description: Missing or invalid bearer token.
+  /distributions/{id}/basket/confirm/:
+    post:
+      operationId: confirmBasket
+      tags: [Orders]
+      summary: Pay a basket
+      description: >-
+        Confirm and pay the basket for a distribution. The response returns a
+        payment form / payment request to hand off to the payment service
+        provider. Note the path segment is plural (`/distributions/`) here while
+        the product listing route is singular (`/distribution/`) — this
+        inconsistency is present in the provider's own blueprint and is
+        preserved verbatim.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Distribution identifier.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRedirectUrls'
+            example:
+              urlAccept: https://ppr.thefoodassembly.com/fr/basket/success/456
+              urlDecline: https://ppr.thefoodassembly.com/fr/basket
+              urlCancel: https://ppr.thefoodassembly.com/fr/basket
+      responses:
+        '200':
+          description: Payment hand-off generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentHandoff'
+        '400':
+          description: Order cannot be placed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderError'
+              example:
+                error: MissingUserInformation
+                details: Order cannot be placed because some user information are missing.
+                orderUuid: cce4b7d2-3e1b-45ef-b8a2-467b4db72f96
+  /orders/{id}/payments/:
+    post:
+      operationId: repayOrder
+      tags: [Orders]
+      summary: Repay a failed order
+      description: Retry payment for an order whose payment was declined or cancelled.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Order identifier.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRedirectUrls'
+            example:
+              urlAccept: https://ppr.thefoodassembly.com/fr/basket/success/456
+              urlDecline: https://ppr.thefoodassembly.com/fr/basket
+              urlCancel: https://ppr.thefoodassembly.com/fr/basket
+      responses:
+        '200':
+          description: Order returned with a fresh payment hand-off.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Order cannot be placed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderError'
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: >-
+        OAuth 2 with the resource-owner password credentials grant and the
+        refresh-token grant, as documented in the blueprint. Access tokens are
+        presented as bearer tokens; the live host advertises
+        `WWW-Authenticate: Bearer`. No scopes are documented — the token
+        response carries `"scope": null`.
+      flows:
+        password:
+          tokenUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          refreshUrl: https://api.thefoodassembly.com/oauth/v2/token/
+          scopes: {}
+  schemas:
+    PasswordGrantRequest:
+      type: object
+      required: [grant_type, client_id, client_secret, username, password]
+      properties:
+        grant_type:
+          type: string
+          const: password
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+    RefreshTokenGrantRequest:
+      type: object
+      required: [grant_type, refresh_token, client_id, client_secret]
+      properties:
+        grant_type:
+          type: string
+          const: refresh_token
+        refresh_token:
+          type: string
+        client_id:
+          type: string
+        client_secret:
+          type: string
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds. Documented example is 3600.
+        token_type:
+          type: string
+          examples: [bearer]
+        scope:
+          type: [string, 'null']
+          description: Null in the documented example; no scope registry is published.
+        refresh_token:
+          type: string
+    OAuthError:
+      type: object
+      properties:
+        error:
+          type: string
+          examples: [invalid_grant]
+    Memberships:
+      type: object
+      properties:
+        isMember:
+          type: boolean
+        hivesAsMember:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hive'
+    Hive:
+      type: object
+      description: An assembly ("hive") the member belongs to.
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+          examples: [open]
+        joinedAt:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: [string, 'null']
+        freshness:
+          type: [integer, 'null']
+        composition:
+          type: [string, 'null']
+        dfsp_priority:
+          type: [integer, 'null']
+        type:
+          $ref: '#/components/schemas/ProductType'
+        farmId:
+          type: integer
+          description: Reference to the producing farm.
+        photoId:
+          type: [string, 'null']
+        storageLife:
+          $ref: '#/components/schemas/StorageLife'
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offer'
+    ProductType:
+      type: object
+      properties:
+        id:
+          type: integer
+        quantityUnit:
+          type: string
+          examples: [mg]
+        quantityStrategy:
+          type: string
+          examples: [weight]
+    StorageLife:
+      type: object
+      properties:
+        amount:
+          type: string
+        unit:
+          type: string
+          examples: [days]
+    Offer:
+      type: object
+      properties:
+        id:
+          type: integer
+        count:
+          type: [integer, 'null']
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        price:
+          $ref: '#/components/schemas/Money'
+        availableStock:
+          type: [string, integer]
+          description: Documented example uses the string `unlimited`.
+    Quantity:
+      type: object
+      properties:
+        amount:
+          type: integer
+        unit:
+          type: string
+    Money:
+      type: object
+      description: Minor-unit amount plus ISO 4217 currency.
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+          examples: [EUR]
+    OrderList:
+      type: object
+      properties:
+        count:
+          type: integer
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          examples: [basket, order]
+        state:
+          $ref: '#/components/schemas/OrderState'
+        totalPrice:
+          $ref: '#/components/schemas/Money'
+        countItems:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+        distributionId:
+          type: integer
+        distribution:
+          type: object
+        paymentUrl:
+          type: string
+        paymentForm:
+          type: string
+          description: Pre-rendered HTML form for the payment service provider.
+        paymentRequest:
+          $ref: '#/components/schemas/PaymentRequest'
+    OrderState:
+      type: integer
+      description: >-
+        Order lifecycle state, per the blueprint's table.
+        1 = Cart (ongoing order, user is shopping);
+        2 = Cart locked (user clicked "Pay", payment form generated on PSP side);
+        3 = Pending (payment in progress, awaiting PSP feedback);
+        4 = Confirmed (payment successful);
+        5 = Shipped (distribution over, member got the order);
+        7 = Canceled (payment denied or canceled).
+        States 6 and 8 are marked n/a in the source.
+      enum: [1, 2, 3, 4, 5, 7]
+    PaymentRedirectUrls:
+      type: object
+      required: [urlAccept, urlDecline, urlCancel]
+      properties:
+        urlAccept:
+          type: string
+          format: uri
+        urlDecline:
+          type: string
+          format: uri
+        urlCancel:
+          type: string
+          format: uri
+    PaymentHandoff:
+      type: object
+      properties:
+        paymentForm:
+          type: string
+        paymentRequest:
+          $ref: '#/components/schemas/PaymentRequest'
+    PaymentRequest:
+      type: object
+      description: Payment service provider endpoint plus the pre-signed payload.
+      properties:
+        url:
+          type: string
+          format: uri
+        data:
+          type: string
+    OrderError:
+      type: object
+      description: >-
+        Order-scoped error envelope used by the payment routes. Distinct from
+        the generic `problemType` envelope observed at the API root.
+      properties:
+        error:
+          type: string
+          examples: [MissingUserInformation]
+        details:
+          type: string
+        orderUuid:
+          type: string
+          format: uuid
+security:
+  - oauth2: []

@@ -1,0 +1,122 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/la-ruche-qui-dit-oui-api-openapi.yml (from the provider's published API Blueprint)
+      plus live header observation on https://api.thefoodassembly.com
+summary: >-
+  Cross-cutting runtime semantics for The Food Assembly API, derived from the
+  provider's own API Blueprint and from live probing. This is a small, mostly
+  undocumented 2017-era REST surface: it has a clear auth model and a stable
+  money/quantity representation, but publishes no idempotency, pagination,
+  versioning or rate-limit contract. Absences below are recorded as absences —
+  they are not defaults we assumed.
+authentication:
+  style: oauth2-bearer
+  detail: >-
+    OAuth 2 resource-owner password credentials grant and refresh-token grant
+    against /oauth/v2/token/. Access tokens are presented as
+    `Authorization: Bearer <token>`; the live host advertises
+    `WWW-Authenticate: Bearer`. Documented token lifetime example is 3600s.
+  scopes: none_documented
+  public_operations:
+  - listDistributionProducts
+  reference: authentication/la-ruche-qui-dit-oui-authentication.yml
+idempotency:
+  supported: false
+  detail: >-
+    No idempotency key header, no request-replay semantics, and no retry
+    guidance are documented anywhere in the blueprint. This matters because the
+    surface includes non-idempotent money operations (confirmBasket, repayOrder)
+    — a retried basket confirmation has no documented protection against
+    duplicate payment hand-off.
+  evidence: absent from openapi/la-ruche-qui-dit-oui-api-openapi.yml and the source blueprint
+pagination:
+  supported: false
+  detail: >-
+    No pagination parameters are documented on any collection route. `GET
+    /orders/` returns a `count` plus a full `orders` array, and
+    `GET /distribution/{id}/products/` returns a bare array — neither exposes
+    limit/offset/cursor parameters or link headers.
+field_expansion:
+  supported: false
+  detail: >-
+    No sparse-fieldset or expansion parameters. Related objects are embedded
+    eagerly: orders carry an inline `distribution` object and an `items` array.
+metadata:
+  supported: false
+  detail: No customer-defined metadata field is documented on any resource.
+request_tracing:
+  request_id_header: none_documented
+  detail: >-
+    No request-id or correlation header is documented or was observed in live
+    responses. The only per-request identifier surfaced is `orderUuid`, and only
+    inside order-error payloads.
+versioning:
+  scheme: none
+  detail: >-
+    The API is unversioned at the path level. The blueprint declares
+    `FORMAT: 1A` — that is the API Blueprint format version, not an API version.
+    The only versioned segment anywhere is `/oauth/v2/`, which versions the
+    OAuth bundle rather than the API. robots.txt on the website disallows a
+    `/*/v2/` path pattern, hinting at a newer internal surface, but nothing
+    about it is published.
+  reference: lifecycle/la-ruche-qui-dit-oui-lifecycle.yml
+errors:
+  envelope: proprietary
+  rfc9457: false
+  detail: >-
+    Two envelopes: a generic `{problemType, title, detail}` shape observed live,
+    and a flat `{error, details, orderUuid}` shape on the payment routes. Token
+    errors use the standard OAuth 2 `{error}` object. None are served as
+    application/problem+json.
+  reference: errors/la-ruche-qui-dit-oui-problem-types.yml
+rate_limiting:
+  signalled: false
+  detail: >-
+    No rate-limit headers documented, none observed on live responses, and no
+    published quota or throttling policy.
+content_negotiation:
+  request: application/json
+  response: application/json
+  detail: All documented requests and responses are JSON.
+data_representations:
+  money:
+    shape: '{amount: integer (minor units), currency: ISO 4217 string}'
+    detail: >-
+      Prices are integer minor units, e.g. `{"amount": 780, "currency": "EUR"}`
+      is EUR 7.80. Applied consistently to offer prices and order totals.
+  quantity:
+    shape: '{amount: integer, unit: string}'
+    detail: >-
+      Quantities are integers in a base unit declared per product type, e.g.
+      `{"amount": 2000000, "unit": "mg"}` is 2 kg. The owning product type also
+      declares `quantityUnit` and `quantityStrategy` (e.g. `weight`).
+  timestamps:
+    format: ISO 8601 with offset
+    example: '2015-04-26T17:25:47+02:00'
+  identifiers:
+    detail: >-
+      Resource ids are bare integers (products, offers, orders, hives, farms,
+      distributions) with no type prefix. Two exceptions: `photoId` is a
+      MongoDB-style 24-character hex ObjectId, and `orderUuid` in error payloads
+      is a UUID.
+  enums:
+    detail: >-
+      Order state is a numeric enum (1 Cart, 2 Cart locked, 3 Pending,
+      4 Confirmed, 5 Shipped, 7 Canceled; 6 and 8 unused) carried alongside a
+      redundant string `status` field (`basket` / `order`).
+  trailing_slash:
+    required: true
+    detail: Every documented path ends in a trailing slash.
+  path_inconsistency:
+    detail: >-
+      The product listing route is singular (`/distribution/{id}/products/`)
+      while the basket route is plural (`/distributions/{id}/basket/confirm/`).
+      Preserved as published.
+payments:
+  model: psp-handoff
+  detail: >-
+    The API does not process payment itself. Basket confirmation returns a
+    pre-rendered HTML `paymentForm` plus a `paymentRequest` (`url` + signed
+    `data`) to POST to the payment service provider; the blueprint's examples
+    show Ogone. The client supplies `urlAccept` / `urlDecline` / `urlCancel`
+    return URLs.

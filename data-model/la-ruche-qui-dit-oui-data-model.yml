@@ -1,0 +1,170 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/la-ruche-qui-dit-oui-api-openapi.yml
+summary: >-
+  Entity-relationship graph for The Food Assembly API, derived from the OpenAPI
+  $ref graph and from id-reference fields in the response payloads. Entities
+  marked `referenced_only` appear in the domain as foreign keys but have no
+  documented endpoint of their own.
+identifiers:
+  style: bare integers, no type prefixes
+  exceptions:
+  - field: photoId
+    format: 24-character hex ObjectId
+  - field: orderUuid
+    format: UUID (error payloads only)
+entities:
+- name: Member
+  description: >-
+    The authenticated user. Not returned as a standalone object; surfaced only
+    through the membership response.
+  endpoints:
+  - getMemberships
+  referenced_only: false
+  relationships:
+  - type: has_many
+    target: Hive
+    via: hivesAsMember
+  - type: has_many
+    target: Order
+    via: implicit (orders are scoped to the bearer token)
+- name: Hive
+  description: >-
+    An assembly ("ruche"), the neighbourhood group a member joins. Carries id,
+    name, status and the member's joinedAt.
+  endpoints: []
+  referenced_only: true
+  relationships:
+  - type: belongs_to
+    target: Member
+    via: hivesAsMember
+  - type: has_many
+    target: Distribution
+    via: implicit (a hive runs recurring distributions)
+    confidence: inferred_from_domain
+- name: Distribution
+  description: >-
+    A single sale/collection event for a hive. Addressed by id in the product
+    and basket routes and embedded inline on orders, but never documented as a
+    standalone resource.
+  endpoints:
+  - listDistributionProducts
+  - confirmBasket
+  referenced_only: true
+  relationships:
+  - type: has_many
+    target: Product
+    via: /distribution/{id}/products/
+  - type: has_many
+    target: Order
+    via: distributionId
+- name: Product
+  description: >-
+    A sellable item offered by a farm for a distribution, with descriptive and
+    storage attributes.
+  endpoints:
+  - listDistributionProducts
+  referenced_only: false
+  relationships:
+  - type: has_one
+    target: ProductType
+    via: type
+  - type: belongs_to
+    target: Farm
+    via: farmId
+  - type: has_one
+    target: StorageLife
+    via: storageLife
+  - type: has_many
+    target: Offer
+    via: offers
+- name: ProductType
+  description: >-
+    Classification carrying the measurement contract for a product
+    (quantityUnit, quantityStrategy).
+  endpoints: []
+  referenced_only: true
+  relationships:
+  - type: belongs_to
+    target: Product
+    via: type
+- name: Farm
+  description: >-
+    The producer. Referenced by farmId on every product; no farm endpoint is
+    documented.
+  endpoints: []
+  referenced_only: true
+  relationships:
+  - type: has_many
+    target: Product
+    via: farmId
+- name: Offer
+  description: >-
+    A purchasable unit of a product — a specific quantity at a specific price
+    with an availability. A product may carry several.
+  endpoints: []
+  referenced_only: true
+  relationships:
+  - type: belongs_to
+    target: Product
+    via: offers
+  - type: has_one
+    target: Quantity
+    via: quantity
+  - type: has_one
+    target: Money
+    via: price
+- name: Order
+  description: >-
+    A basket or placed order for one distribution, carrying a numeric lifecycle
+    state and, once locked, a payment hand-off.
+  endpoints:
+  - listOrders
+  - confirmBasket
+  - repayOrder
+  referenced_only: false
+  relationships:
+  - type: belongs_to
+    target: Distribution
+    via: distributionId
+  - type: has_many
+    target: OrderItem
+    via: items
+  - type: has_one
+    target: Money
+    via: totalPrice
+  - type: has_one
+    target: PaymentRequest
+    via: paymentRequest
+- name: OrderItem
+  description: >-
+    Line item on an order. Present as `items[]` but its shape is elided as
+    `[...]` in the provider's documentation, so no fields are recorded here.
+  endpoints: []
+  referenced_only: true
+  shape: undocumented
+  relationships:
+  - type: belongs_to
+    target: Order
+    via: items
+- name: PaymentRequest
+  description: >-
+    Payment service provider endpoint plus signed payload, handed to the client
+    to POST. Blueprint examples show Ogone.
+  endpoints: []
+  referenced_only: true
+  relationships:
+  - type: belongs_to
+    target: Order
+    via: paymentRequest
+value_objects:
+- name: Money
+  shape: '{amount: integer minor units, currency: ISO 4217}'
+- name: Quantity
+  shape: '{amount: integer, unit: string}'
+- name: StorageLife
+  shape: '{amount: string, unit: string}'
+gaps:
+- Hive, Distribution, Farm and Offer are addressable in the domain but have no documented endpoints.
+- OrderItem's shape is elided in the source documentation.
+- No create/update/delete operations are documented for the basket — only confirmation and repayment.
