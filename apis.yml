@@ -1,26 +1,155 @@
 aid: la-ruche-qui-dit-oui
 name: La Ruche qui dit Oui!
-description: La Ruche qui dit Oui! is a company surfaced as a portfolio company of union-square-ventures
-  and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the
-  enrichment pipeline.
+description: >-
+  La Ruche qui dit Oui! is a French direct-from-farmer food marketplace, founded in Paris in 2010 and
+  known in English-speaking markets as The Food Assembly. It connects members with local and European
+  producers through neighbourhood assemblies ("ruches" / hives) and, since a May 2025 merger with
+  CrowdFarming, through direct home delivery of seasonal boxes, subscriptions and harvest "adoptions"
+  in which a member reserves the output of a specific tree, hive or plot for a season. The company
+  operated a public member-facing REST API documented as the Food Assembly API — OAuth 2 token
+  issuance, assembly membership, distribution product and offer listings, and the basket/order payment
+  flow — published as an API Blueprint in the lrqdo/developer repository. That developer documentation
+  has not been updated since 2017, and there is no current developer portal, but the API host remains
+  live behind bearer authentication.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://laruchequiditoui.fr/img/seo/og-image.jpg
 url: https://raw.githubusercontent.com/api-evangelist/la-ruche-qui-dit-oui/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - union-square-ventures
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: legacy-public-api-documented
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-apis: []
+- Food
+- Agriculture
+- Marketplace
+- E-Commerce
+- Local Food
+- Sustainability
+- France
+apis:
+- aid: la-ruche-qui-dit-oui:la-ruche-qui-dit-oui-assemblies-api
+  name: La Ruche qui dit Oui! Assemblies API
+  description: Assembly ("hive") membership for the authenticated member.
+  humanURL: https://github.com/lrqdo/developer
+  baseURL: https://api.thefoodassembly.com
+  tags:
+  - Assemblies
+  properties:
+  - type: OpenAPI
+    url: openapi/la-ruche-qui-dit-oui-assemblies-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/la-ruche-qui-dit-oui-api.apib
+  - type: Documentation
+    url: https://github.com/lrqdo/developer
+  - type: APIReference
+    url: https://github.com/lrqdo/developer/blob/master/api.md
+- aid: la-ruche-qui-dit-oui:la-ruche-qui-dit-oui-authentication-api
+  name: La Ruche qui dit Oui! Authentication API
+  description: OAuth 2 token issuance.
+  humanURL: https://github.com/lrqdo/developer
+  baseURL: https://api.thefoodassembly.com
+  tags:
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/la-ruche-qui-dit-oui-authentication-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/la-ruche-qui-dit-oui-api.apib
+  - type: Documentation
+    url: https://github.com/lrqdo/developer
+  - type: APIReference
+    url: https://github.com/lrqdo/developer/blob/master/api.md
+- aid: la-ruche-qui-dit-oui:la-ruche-qui-dit-oui-orders-api
+  name: La Ruche qui dit Oui! Orders API
+  description: Basket, orders and payment.
+  humanURL: https://github.com/lrqdo/developer
+  baseURL: https://api.thefoodassembly.com
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/la-ruche-qui-dit-oui-orders-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/la-ruche-qui-dit-oui-api.apib
+  - type: Documentation
+    url: https://github.com/lrqdo/developer
+  - type: APIReference
+    url: https://github.com/lrqdo/developer/blob/master/api.md
+- aid: la-ruche-qui-dit-oui:la-ruche-qui-dit-oui-sale-api
+  name: La Ruche qui dit Oui! Sale API
+  description: Products and offers on sale for a distribution.
+  humanURL: https://github.com/lrqdo/developer
+  baseURL: https://api.thefoodassembly.com
+  tags:
+  - Sale
+  properties:
+  - type: OpenAPI
+    url: openapi/la-ruche-qui-dit-oui-sale-api-openapi.yml
+  - type: APIBlueprint
+    url: openapi/la-ruche-qui-dit-oui-api.apib
+  - type: Documentation
+    url: https://github.com/lrqdo/developer
+  - type: APIReference
+    url: https://github.com/lrqdo/developer/blob/master/api.md
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/la-ruche-qui-dit-oui-domain-security.yml
+- type: Authentication
+  url: authentication/la-ruche-qui-dit-oui-authentication.yml
 - type: Website
   url: https://laruchequiditoui.fr
+- type: GitHubOrganization
+  url: https://github.com/lrqdo
+- type: Support
+  url: https://support.crowdfarming.com/l/fr
+- type: HelpCenter
+  url: https://laruchequiditoui.fr/en/open-incident
+- type: SignUp
+  url: https://laruchequiditoui.fr/fr/auth
+- type: TermsOfService
+  url: https://laruchequiditoui.fr/fr/tos
+- type: Blog
+  url: https://laruchequiditoui.fr/fr/what-the-field/
+- type: LLMsTxt
+  url: llms/la-ruche-qui-dit-oui-llms.txt
+- type: Conventions
+  url: conventions/la-ruche-qui-dit-oui-conventions.yml
+- type: ErrorCatalog
+  url: errors/la-ruche-qui-dit-oui-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/la-ruche-qui-dit-oui-lifecycle.yml
+- type: Conformance
+  url: conformance/la-ruche-qui-dit-oui-conformance.yml
+- type: DataModel
+  url: data-model/la-ruche-qui-dit-oui-data-model.yml
+- type: Overlay
+  url: overlays/la-ruche-qui-dit-oui-api-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
