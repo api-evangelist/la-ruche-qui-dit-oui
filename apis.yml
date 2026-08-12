@@ -114,6 +114,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: MCPServer
+  url: mcp/la-ruche-qui-dit-oui-mcp.yml
 - type: DomainSecurity
   url: security/la-ruche-qui-dit-oui-domain-security.yml
 - type: Authentication
