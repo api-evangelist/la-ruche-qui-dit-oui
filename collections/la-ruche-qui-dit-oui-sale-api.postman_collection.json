@@ -1,0 +1,149 @@
+{
+  "item": [
+    {
+      "id": "5bb887aa-b5ea-4caa-8d48-ce0fdc24bde1",
+      "name": "Sale",
+      "description": {
+        "content": "Products and offers on sale for a distribution.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9b789e4b-c895-4098-91d3-0df1acc83771",
+          "name": "Products for sale",
+          "request": {
+            "name": "Products for sale",
+            "description": {
+              "content": "Products and their offers on sale for a distribution. The blueprint marks this route as public (no authentication required).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "distribution",
+                ":id",
+                "products",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) Distribution identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "49fe886d-42c5-4252-afab-dc656d1648ad",
+              "name": "Products on sale for the distribution.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "distribution",
+                    ":id",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Distribution identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 71175,\n    \"name\": \"cerises bigarreaux\",\n    \"description\": \"Cerises bigarreaux de l'Yonne\",\n    \"freshness\": 1,\n    \"composition\": null,\n    \"dfsp_priority\": 28,\n    \"type\": {\n      \"id\": 225,\n      \"quantityUnit\": \"mg\",\n      \"quantityStrategy\": \"weight\"\n    },\n    \"farmId\": 2893,\n    \"photoId\": \"5478488b5f4271bf76edfd3e\",\n    \"storageLife\": {\n      \"amount\": \"2\",\n      \"unit\": \"days\"\n    },\n    \"offers\": [\n      {\n        \"id\": 284201,\n        \"count\": null,\n        \"quantity\": {\n          \"amount\": 2000000,\n          \"unit\": \"mg\"\n        },\n        \"price\": {\n          \"amount\": 780,\n          \"currency\": \"EUR\"\n        },\n        \"availableStock\": \"unlimited\"\n      }\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.thefoodassembly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "redirect_uri",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "grant_type",
+        "value": "password_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "027a5edc-86d7-4d2b-bc5e-f92699b37a30",
+    "name": "The Food Assembly Assemblies Sale API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider's own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly (\"hive\") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.\n\nProvenance: every path, method, field and example below is taken from the provider's published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.\n\nContact Support:\n Name: La Ruche qui dit Oui!",
+      "type": "text/plain"
+    }
+  }
+}

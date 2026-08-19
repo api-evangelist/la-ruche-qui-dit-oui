@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "The Food Assembly Assemblies Sale API",
+    "version": "1A"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "resource_owner_password_credentials",
+      "accessTokenUrl": "https://api.thefoodassembly.com/oauth/v2/token/",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sale",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Products for sale",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.thefoodassembly.com/distribution/:id/products/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Distribution identifier."
+              }
+            ]
+          },
+          "docs": "Products and their offers on sale for a distribution. The blueprint marks this route as public (no authentication required)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

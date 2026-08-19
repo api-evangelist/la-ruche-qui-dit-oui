@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "The Food Assembly Assemblies Authentication API",
+    "version": "1A"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "resource_owner_password_credentials",
+      "accessTokenUrl": "https://api.thefoodassembly.com/oauth/v2/token/",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.thefoodassembly.com/oauth/v2/token/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new access token by submitting a username/password pair or a refresh token."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

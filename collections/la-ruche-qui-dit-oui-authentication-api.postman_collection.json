@@ -1,0 +1,208 @@
+{
+  "item": [
+    {
+      "id": "0f1fac19-7d06-4101-8765-9e82d5d0a03a",
+      "name": "Authentication",
+      "description": {
+        "content": "OAuth 2 token issuance.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c644edd4-bff5-45bc-a67a-7559e534a949",
+          "name": "Create Token",
+          "request": {
+            "name": "Create Token",
+            "description": {
+              "content": "Create a new access token by submitting a username/password pair or a refresh token.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "oauth",
+                "v2",
+                "token",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grant_type\": \"<string>\",\n  \"client_id\": \"<string>\",\n  \"client_secret\": \"<string>\",\n  \"username\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9619a766-96fd-4bdf-966b-07905d7dd3c0",
+              "name": "Token issued.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "oauth",
+                    "v2",
+                    "token",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant_type\": \"password\",\n  \"client_id\": \"example-client-id\",\n  \"client_secret\": \"example-client-secret\",\n  \"username\": \"test@example.org\",\n  \"password\": \"passw123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"some_access_token\",\n  \"expires_in\": 3600,\n  \"token_type\": \"bearer\",\n  \"scope\": null,\n  \"refresh_token\": \"some_refresh_token\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84369e93-2dc6-43a7-9666-df59368d3f0e",
+              "name": "Invalid grant.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "oauth",
+                    "v2",
+                    "token",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant_type\": \"password\",\n  \"client_id\": \"example-client-id\",\n  \"client_secret\": \"example-client-secret\",\n  \"username\": \"test@example.org\",\n  \"password\": \"passw123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"invalid_grant\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.thefoodassembly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "redirect_uri",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "grant_type",
+        "value": "password_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "2d2318a6-cd08-47c5-af7f-8f1ab6e3af00",
+    "name": "The Food Assembly Assemblies Authentication API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider's own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly (\"hive\") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.\n\nProvenance: every path, method, field and example below is taken from the provider's published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.\n\nContact Support:\n Name: La Ruche qui dit Oui!",
+      "type": "text/plain"
+    }
+  }
+}

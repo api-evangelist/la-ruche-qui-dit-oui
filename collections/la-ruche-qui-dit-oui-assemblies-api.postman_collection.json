@@ -1,0 +1,169 @@
+{
+  "item": [
+    {
+      "id": "24416deb-0e92-4f67-a5d4-ff5ac36dc1ff",
+      "name": "Assemblies",
+      "description": {
+        "content": "Assembly (\"hive\") membership for the authenticated member.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d1b5e7b2-d84a-423e-bcb2-a825b8d81ebc",
+          "name": "Memberships",
+          "request": {
+            "name": "Memberships",
+            "description": {
+              "content": "Request user information to find out if user is member of one or several assemblies.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "me",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a6565dba-f883-4fd0-9f60-48b25f3c8b26",
+              "name": "Membership information for the authenticated member.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "me",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"isMember\": true,\n  \"hivesAsMember\": [\n    {\n      \"id\": 123,\n      \"name\": \"Le Comptoir Général\",\n      \"status\": \"open\",\n      \"joinedAt\": \"2015-04-26T17:25:47+02:00\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4a2c809c-6742-43bf-97dd-4c3ffb3995f4",
+              "name": "Missing or invalid bearer token. Observed live 2026-07-19 with `WWW-Authenticate: Bearer`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "me",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.thefoodassembly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "redirect_uri",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "grant_type",
+        "value": "password_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "87db2500-f9a5-4432-8325-74309bc8a046",
+    "name": "The Food Assembly Assemblies API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider's own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly (\"hive\") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.\n\nProvenance: every path, method, field and example below is taken from the provider's published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.\n\nContact Support:\n Name: La Ruche qui dit Oui!",
+      "type": "text/plain"
+    }
+  }
+}

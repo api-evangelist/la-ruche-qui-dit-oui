@@ -1,0 +1,86 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "The Food Assembly Assemblies Orders API",
+    "version": "1A"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "resource_owner_password_credentials",
+      "accessTokenUrl": "https://api.thefoodassembly.com/oauth/v2/token/",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Current basket and orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.thefoodassembly.com/orders/"
+          },
+          "docs": "The authenticated member's current basket and orders. The `state` attribute carries the order lifecycle (see the `OrderState` schema)."
+        },
+        {
+          "info": {
+            "name": "Pay a basket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.thefoodassembly.com/distributions/:id/basket/confirm/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Distribution identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Confirm and pay the basket for a distribution. The response returns a payment form / payment request to hand off to the payment service provider. Note the path segment is plural (`/distributions/`) here while the product listing route is singular (`/distribution/`) — this inconsistency is present in the provider's own blueprint and is preserved verbatim."
+        },
+        {
+          "info": {
+            "name": "Repay a failed order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.thefoodassembly.com/orders/:id/payments/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Order identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retry payment for an order whose payment was declined or cancelled."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

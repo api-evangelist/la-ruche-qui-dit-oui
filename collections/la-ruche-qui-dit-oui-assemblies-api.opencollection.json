@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "The Food Assembly Assemblies API",
+    "version": "1A"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "resource_owner_password_credentials",
+      "accessTokenUrl": "https://api.thefoodassembly.com/oauth/v2/token/",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Assemblies",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Memberships",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.thefoodassembly.com/me/"
+          },
+          "docs": "Request user information to find out if user is member of one or several assemblies."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

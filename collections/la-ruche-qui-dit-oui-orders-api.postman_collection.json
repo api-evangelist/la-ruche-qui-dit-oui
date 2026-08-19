@@ -1,0 +1,538 @@
+{
+  "item": [
+    {
+      "id": "fa18f84d-23ea-4202-910f-216e48b243dc",
+      "name": "Orders",
+      "description": {
+        "content": "Basket, orders and payment.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bd816e09-a871-4b13-9845-a3792367e891",
+          "name": "Current basket and orders",
+          "request": {
+            "name": "Current basket and orders",
+            "description": {
+              "content": "The authenticated member's current basket and orders. The `state` attribute carries the order lifecycle (see the `OrderState` schema).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f87af40c-baea-4e9d-810c-932bf4085445",
+              "name": "Baskets and orders for the authenticated member.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 2750,\n  \"orders\": [\n    {\n      \"id\": 9734,\n      \"createdAt\": \"1956-06-10T01:53:14.893Z\",\n      \"status\": \"basket\",\n      \"state\": 5,\n      \"totalPrice\": {\n        \"amount\": 7806,\n        \"currency\": \"EUR\"\n      },\n      \"countItems\": 436,\n      \"distributionId\": 3604,\n      \"distribution\": {},\n      \"paymentUrl\": \"string\",\n      \"paymentForm\": \"string\",\n      \"paymentRequest\": {\n        \"url\": \"http://xSTnjZnQFBzXYTdHbFIE.ffabwWev7qTs484Lx3YS4EUMhZvQDlqwBwBicRaKFecIhsaNy-xKas.OM1MIH,c\",\n        \"data\": \"string\"\n      }\n    },\n    {\n      \"id\": 252,\n      \"createdAt\": \"2017-03-30T07:57:44.205Z\",\n      \"status\": \"basket\",\n      \"state\": 1,\n      \"totalPrice\": {\n        \"amount\": 7835,\n        \"currency\": \"EUR\"\n      },\n      \"countItems\": 7225,\n      \"distributionId\": 3094,\n      \"distribution\": {},\n      \"paymentUrl\": \"string\",\n      \"paymentForm\": \"string\",\n      \"paymentRequest\": {\n        \"url\": \"http://lHoAHFqfkCfEyjUSBslPoSWPK.auft2HFPyxbNIWItLJdv+ZVDOQzfuaWn-c0iNOS89yP-ikv0pIycmjFzcKM\",\n        \"data\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4acc7ea-bdca-4701-848b-9001718ca9fd",
+              "name": "Missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f718fa4e-d05e-4b36-9e8b-90f0720c54e7",
+          "name": "Pay a basket",
+          "request": {
+            "name": "Pay a basket",
+            "description": {
+              "content": "Confirm and pay the basket for a distribution. The response returns a payment form / payment request to hand off to the payment service provider. Note the path segment is plural (`/distributions/`) here while the product listing route is singular (`/distribution/`) — this inconsistency is present in the provider's own blueprint and is preserved verbatim.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "distributions",
+                ":id",
+                "basket",
+                "confirm",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) Distribution identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urlAccept\": \"<uri>\",\n  \"urlDecline\": \"<uri>\",\n  \"urlCancel\": \"<uri>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "bd99addf-2819-4a36-ba29-c9b3b4a5bb92",
+              "name": "Payment hand-off generated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "distributions",
+                    ":id",
+                    "basket",
+                    "confirm",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Distribution identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"urlAccept\": \"https://ppr.thefoodassembly.com/fr/basket/success/456\",\n  \"urlDecline\": \"https://ppr.thefoodassembly.com/fr/basket\",\n  \"urlCancel\": \"https://ppr.thefoodassembly.com/fr/basket\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"paymentForm\": \"string\",\n  \"paymentRequest\": {\n    \"url\": \"https://hJsdF.hyp.1tUmbHcvjV1CWEwBW90QYXkUEkfKcM38DhqKtwulwUJ.x\",\n    \"data\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e819b29a-1594-4b69-902e-98711e794205",
+              "name": "Order cannot be placed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "distributions",
+                    ":id",
+                    "basket",
+                    "confirm",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Distribution identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"urlAccept\": \"https://ppr.thefoodassembly.com/fr/basket/success/456\",\n  \"urlDecline\": \"https://ppr.thefoodassembly.com/fr/basket\",\n  \"urlCancel\": \"https://ppr.thefoodassembly.com/fr/basket\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"MissingUserInformation\",\n  \"details\": \"Order cannot be placed because some user information are missing.\",\n  \"orderUuid\": \"cce4b7d2-3e1b-45ef-b8a2-467b4db72f96\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "98b6cb68-a44f-486f-a1d3-18f8c119b804",
+          "name": "Repay a failed order",
+          "request": {
+            "name": "Repay a failed order",
+            "description": {
+              "content": "Retry payment for an order whose payment was declined or cancelled.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ":id",
+                "payments",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) Order identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urlAccept\": \"<uri>\",\n  \"urlDecline\": \"<uri>\",\n  \"urlCancel\": \"<uri>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "463137a0-ba64-43d1-a9ff-116952d10c56",
+              "name": "Order returned with a fresh payment hand-off.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id",
+                    "payments",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Order identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"urlAccept\": \"https://ppr.thefoodassembly.com/fr/basket/success/456\",\n  \"urlDecline\": \"https://ppr.thefoodassembly.com/fr/basket\",\n  \"urlCancel\": \"https://ppr.thefoodassembly.com/fr/basket\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 4458,\n  \"createdAt\": \"1999-06-13T00:19:49.678Z\",\n  \"status\": \"basket\",\n  \"state\": 5,\n  \"totalPrice\": {\n    \"amount\": 1688,\n    \"currency\": \"EUR\"\n  },\n  \"countItems\": 7306,\n  \"distributionId\": 9837,\n  \"distribution\": {},\n  \"paymentUrl\": \"string\",\n  \"paymentForm\": \"string\",\n  \"paymentRequest\": {\n    \"url\": \"http://QpKNJXdbpKHOUUdqGGYPhychWeVvA.yeziPZrK16bRMdLPgmB-rfwR1O8.uUeR34zospXIEJwuy7-ljYjN5m1X5aw\",\n    \"data\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8eff1f52-7734-4526-8152-55c896769e46",
+              "name": "Order cannot be placed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id",
+                    "payments",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Order identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"urlAccept\": \"https://ppr.thefoodassembly.com/fr/basket/success/456\",\n  \"urlDecline\": \"https://ppr.thefoodassembly.com/fr/basket\",\n  \"urlCancel\": \"https://ppr.thefoodassembly.com/fr/basket\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"MissingUserInformation\",\n  \"details\": \"string\",\n  \"orderUuid\": \"d1d83156-6663-996d-db0c-3a794fc95179\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.thefoodassembly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "redirect_uri",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.thefoodassembly.com/oauth/v2/token/"
+      },
+      {
+        "key": "grant_type",
+        "value": "password_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "878aaff4-5729-4439-9c66-97d969319d09",
+    "name": "The Food Assembly Assemblies Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider's own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly (\"hive\") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.\n\nProvenance: every path, method, field and example below is taken from the provider's published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.\n\nContact Support:\n Name: La Ruche qui dit Oui!",
+      "type": "text/plain"
+    }
+  }
+}

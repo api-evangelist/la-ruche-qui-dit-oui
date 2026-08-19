@@ -2,12 +2,10 @@ generated: '2026-07-19'
 method: derived
 status: candidate
 source: openapi/la-ruche-qui-dit-oui-api-openapi.yml
-summary: >-
-  No official or hosted MCP server is published by La Ruche qui dit Oui! /
-  CrowdFarming. Searched the provider's GitHub organisation (lrqdo, 57 public
-  repos), npm and PyPI — nothing MCP-related. The tool list below is a candidate
-  surface derived one-to-one from the documented API operations; it is a design
-  proposal, not something the provider offers.
+summary: No official or hosted MCP server is published by La Ruche qui dit Oui! / CrowdFarming. Searched
+  the provider's GitHub organisation (lrqdo, 57 public repos), npm and PyPI — nothing MCP-related. The
+  tool list below is a candidate surface derived one-to-one from the documented API operations; it is
+  a design proposal, not something the provider offers.
 search_evidence:
 - source: https://github.com/lrqdo
   result: no MCP repository among 57 public repos
@@ -22,12 +20,10 @@ server:
   published: false
 auth:
   scheme: oauth2-bearer
-  note: >-
-    Any implementation would need to broker an OAuth 2 password-grant token
-    against https://api.thefoodassembly.com/oauth/v2/token/ and pass it as a
-    bearer token. Because the only documented grant is the password grant, the
-    server would have to handle end-user credentials directly — a meaningful
-    security objection to building this as specified.
+  note: Any implementation would need to broker an OAuth 2 password-grant token against https://api.thefoodassembly.com/oauth/v2/token/
+    and pass it as a bearer token. Because the only documented grant is the password grant, the server
+    would have to handle end-user credentials directly — a meaningful security objection to building this
+    as specified.
 tools:
 - name: get_memberships
   description: Check whether the authenticated member belongs to one or more assemblies (hives).
@@ -42,9 +38,8 @@ tools:
   source_operation: openapi/la-ruche-qui-dit-oui-api-openapi.yml#listOrders
   read_only: true
 - name: confirm_basket
-  description: >-
-    Confirm and pay the basket for a distribution, returning a payment hand-off
-    for the payment service provider.
+  description: Confirm and pay the basket for a distribution, returning a payment hand-off for the payment
+    service provider.
   source_operation: openapi/la-ruche-qui-dit-oui-api-openapi.yml#confirmBasket
   read_only: false
   consequence: money_movement
@@ -56,10 +51,12 @@ tools:
   consequence: money_movement
   escalation: human_confirmation_required
 caveats:
-- >-
-  Two documented routes (the token endpoint and the product listing) returned
-  404 on live probing 2026-07-19, so a candidate server built from this spec
-  would not work against the current deployment without rediscovery.
-- >-
-  No idempotency mechanism exists, so the two write tools cannot be safely
-  retried by an agent.
+- Two documented routes (the token endpoint and the product listing) returned 404 on live probing 2026-07-19,
+  so a candidate server built from this spec would not work against the current deployment without rediscovery.
+- No idempotency mechanism exists, so the two write tools cannot be safely retried by an agent.
+deployment:
+  mode: none
+  verified: derived
+  tools: 5
+  checked: '2026-08-12'
+  source: catalog MCP census
