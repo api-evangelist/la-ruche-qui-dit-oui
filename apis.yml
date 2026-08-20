@@ -82,6 +82,8 @@ apis:
   humanURL: https://github.com/lrqdo/developer
   baseURL: https://api.thefoodassembly.com
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
