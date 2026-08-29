@@ -15,6 +15,12 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "la-ruche-qui-dit-oui-assemblies-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "la-ruche-qui-dit-oui-authentication-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "la-ruche-qui-dit-oui-orders-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "la-ruche-qui-dit-oui-sale-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
   "skipped": []
 }

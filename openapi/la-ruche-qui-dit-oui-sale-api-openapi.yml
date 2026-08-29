@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: The Food Assembly Assemblies Sale API
+  title: Food Assembly Assemblies Sale API
   description: 'Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider''s own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly ("hive") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.
 
 
@@ -74,6 +74,15 @@ paths:
                   availableStock: unlimited
 components:
   schemas:
+    StorageLife:
+      type: object
+      properties:
+        amount:
+          type: string
+        unit:
+          type: string
+          examples:
+          - days
     ProductType:
       type: object
       properties:
@@ -87,33 +96,6 @@ components:
           type: string
           examples:
           - weight
-    Offer:
-      type: object
-      properties:
-        id:
-          type: integer
-        count:
-          type:
-          - integer
-          - 'null'
-        quantity:
-          $ref: '#/components/schemas/Quantity'
-        price:
-          $ref: '#/components/schemas/Money'
-        availableStock:
-          type:
-          - string
-          - integer
-          description: Documented example uses the string `unlimited`.
-    StorageLife:
-      type: object
-      properties:
-        amount:
-          type: string
-        unit:
-          type: string
-          examples:
-          - days
     Product:
       type: object
       properties:
@@ -152,6 +134,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offer'
+    Offer:
+      type: object
+      properties:
+        id:
+          type: integer
+        count:
+          type:
+          - integer
+          - 'null'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        price:
+          $ref: '#/components/schemas/Money'
+        availableStock:
+          type:
+          - string
+          - integer
+          description: Documented example uses the string `unlimited`.
     Quantity:
       type: object
       properties:

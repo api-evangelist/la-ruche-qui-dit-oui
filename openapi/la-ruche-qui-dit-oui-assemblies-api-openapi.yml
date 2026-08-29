@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: The Food Assembly Assemblies API
+  title: Food Assembly Assemblies API
   description: 'Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider''s own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly ("hive") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.
 
 
@@ -47,6 +47,15 @@ paths:
           description: 'Missing or invalid bearer token. Observed live 2026-07-19 with `WWW-Authenticate: Bearer`.'
 components:
   schemas:
+    Memberships:
+      type: object
+      properties:
+        isMember:
+          type: boolean
+        hivesAsMember:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hive'
     Hive:
       type: object
       description: An assembly ("hive") the member belongs to.
@@ -62,15 +71,6 @@ components:
         joinedAt:
           type: string
           format: date-time
-    Memberships:
-      type: object
-      properties:
-        isMember:
-          type: boolean
-        hivesAsMember:
-          type: array
-          items:
-            $ref: '#/components/schemas/Hive'
   securitySchemes:
     oauth2:
       type: oauth2
