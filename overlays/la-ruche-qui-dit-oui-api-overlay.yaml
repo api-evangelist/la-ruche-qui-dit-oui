@@ -2,7 +2,7 @@ overlay: 1.0.0
 info:
   title: La Ruche qui dit Oui! — API Evangelist enhancements
   version: 1.0.0
-  description: >-
+  x-description: >-
     OpenAPI Overlay capturing API Evangelist's enrichment of The Food Assembly
     API description. The base document is itself a faithful conversion of the
     provider's published API Blueprint; this overlay adds only the annotations

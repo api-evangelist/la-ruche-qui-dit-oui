@@ -1,10 +1,7 @@
 {
   "provider": "la-ruche-qui-dit-oui",
   "sources": [
-    "la-ruche-qui-dit-oui-assemblies-api-openapi.yml",
-    "la-ruche-qui-dit-oui-authentication-api-openapi.yml",
-    "la-ruche-qui-dit-oui-orders-api-openapi.yml",
-    "la-ruche-qui-dit-oui-sale-api-openapi.yml"
+    "_ae-authored/la-ruche-qui-dit-oui-api-openapi.yml"
   ],
   "outputs": [
     "la-ruche-qui-dit-oui-assemblies-api-openapi.yml",
@@ -16,11 +13,14 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "la-ruche-qui-dit-oui-assemblies-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "la-ruche-qui-dit-oui-authentication-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "la-ruche-qui-dit-oui-orders-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "la-ruche-qui-dit-oui-sale-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "la-ruche-qui-dit-oui-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "la-ruche-qui-dit-oui-assemblies-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-ruche-qui-dit-oui-authentication-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-ruche-qui-dit-oui-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "la-ruche-qui-dit-oui-sale-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

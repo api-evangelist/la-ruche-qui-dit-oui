@@ -1,10 +1,7 @@
 openapi: 3.2.0
 info:
-  title: Food Assembly Assemblies Sale API
-  description: 'Member-facing REST API for La Ruche qui dit Oui! / The Food Assembly. This OpenAPI description is a faithful conversion of the provider''s own published API Blueprint (`lrqdo/developer/api.md`, FORMAT 1A), which documents OAuth 2 token issuance, assembly ("hive") membership lookup, the public product / offer listing for a distribution, and the basket + order payment flow.
-
-
-    Provenance: every path, method, field and example below is taken from the provider''s published API Blueprint. Nothing has been invented. The blueprint was last updated 2017-04-06; the host `api.thefoodassembly.com` was still answering on 2026-07-19 (`401` with `WWW-Authenticate: Bearer` at `/`, `401` at `/me/`), so the surface is live but the documentation is unmaintained.'
+  title: Food Assembly Sale API
+  description: Member-facing REST API for La Ruche qui dit Oui!
   version: 1A
   x-source-format: API Blueprint (FORMAT 1A)
   x-source-document: https://github.com/lrqdo/developer/blob/master/api.md
@@ -74,28 +71,16 @@ paths:
                   availableStock: unlimited
 components:
   schemas:
-    StorageLife:
+    Money:
       type: object
+      description: Minor-unit amount plus ISO 4217 currency.
       properties:
         amount:
-          type: string
-        unit:
-          type: string
-          examples:
-          - days
-    ProductType:
-      type: object
-      properties:
-        id:
           type: integer
-        quantityUnit:
+        currency:
           type: string
           examples:
-          - mg
-        quantityStrategy:
-          type: string
-          examples:
-          - weight
+          - EUR
     Product:
       type: object
       properties:
@@ -134,6 +119,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offer'
+    StorageLife:
+      type: object
+      properties:
+        amount:
+          type: string
+        unit:
+          type: string
+          examples:
+          - days
+    Quantity:
+      type: object
+      properties:
+        amount:
+          type: integer
+        unit:
+          type: string
     Offer:
       type: object
       properties:
@@ -152,23 +153,19 @@ components:
           - string
           - integer
           description: Documented example uses the string `unlimited`.
-    Quantity:
+    ProductType:
       type: object
       properties:
-        amount:
+        id:
           type: integer
-        unit:
-          type: string
-    Money:
-      type: object
-      description: Minor-unit amount plus ISO 4217 currency.
-      properties:
-        amount:
-          type: integer
-        currency:
+        quantityUnit:
           type: string
           examples:
-          - EUR
+          - mg
+        quantityStrategy:
+          type: string
+          examples:
+          - weight
   securitySchemes:
     oauth2:
       type: oauth2
