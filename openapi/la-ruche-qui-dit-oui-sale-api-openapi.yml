@@ -81,6 +81,26 @@ components:
           type: string
           examples:
           - EUR
+    Quantity:
+      type: object
+      properties:
+        amount:
+          type: integer
+        unit:
+          type: string
+    ProductType:
+      type: object
+      properties:
+        id:
+          type: integer
+        quantityUnit:
+          type: string
+          examples:
+          - mg
+        quantityStrategy:
+          type: string
+          examples:
+          - weight
     Product:
       type: object
       properties:
@@ -119,22 +139,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offer'
-    StorageLife:
-      type: object
-      properties:
-        amount:
-          type: string
-        unit:
-          type: string
-          examples:
-          - days
-    Quantity:
-      type: object
-      properties:
-        amount:
-          type: integer
-        unit:
-          type: string
     Offer:
       type: object
       properties:
@@ -153,19 +157,15 @@ components:
           - string
           - integer
           description: Documented example uses the string `unlimited`.
-    ProductType:
+    StorageLife:
       type: object
       properties:
-        id:
-          type: integer
-        quantityUnit:
+        amount:
+          type: string
+        unit:
           type: string
           examples:
-          - mg
-        quantityStrategy:
-          type: string
-          examples:
-          - weight
+          - days
   securitySchemes:
     oauth2:
       type: oauth2

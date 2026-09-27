@@ -115,6 +115,51 @@ paths:
                 $ref: '#/components/schemas/OrderError'
 components:
   schemas:
+    PaymentRequest:
+      type: object
+      description: Payment service provider endpoint plus the pre-signed payload.
+      properties:
+        url:
+          type: string
+          format: uri
+        data:
+          type: string
+    Money:
+      type: object
+      description: Minor-unit amount plus ISO 4217 currency.
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+          examples:
+          - EUR
+    OrderList:
+      type: object
+      properties:
+        count:
+          type: integer
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    OrderState:
+      type: integer
+      description: Order lifecycle state, per the blueprint's table. 1 = Cart (ongoing order, user is shopping); 2 = Cart locked (user clicked "Pay", payment form generated on PSP side); 3 = Pending (payment in progress, awaiting PSP feedback); 4 = Confirmed (payment successful); 5 = Shipped (distribution over, member got the order); 7 = Canceled (payment denied or canceled). States 6 and 8 are marked n/a in the source.
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 7
+    PaymentHandoff:
+      type: object
+      properties:
+        paymentForm:
+          type: string
+        paymentRequest:
+          $ref: '#/components/schemas/PaymentRequest'
     Order:
       type: object
       properties:
@@ -149,15 +194,19 @@ components:
           description: Pre-rendered HTML form for the payment service provider.
         paymentRequest:
           $ref: '#/components/schemas/PaymentRequest'
-    OrderList:
+    OrderError:
       type: object
+      description: Order-scoped error envelope used by the payment routes. Distinct from the generic `problemType` envelope observed at the API root.
       properties:
-        count:
-          type: integer
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
+        error:
+          type: string
+          examples:
+          - MissingUserInformation
+        details:
+          type: string
+        orderUuid:
+          type: string
+          format: uuid
     PaymentRedirectUrls:
       type: object
       required:
@@ -174,55 +223,6 @@ components:
         urlCancel:
           type: string
           format: uri
-    PaymentRequest:
-      type: object
-      description: Payment service provider endpoint plus the pre-signed payload.
-      properties:
-        url:
-          type: string
-          format: uri
-        data:
-          type: string
-    OrderError:
-      type: object
-      description: Order-scoped error envelope used by the payment routes. Distinct from the generic `problemType` envelope observed at the API root.
-      properties:
-        error:
-          type: string
-          examples:
-          - MissingUserInformation
-        details:
-          type: string
-        orderUuid:
-          type: string
-          format: uuid
-    Money:
-      type: object
-      description: Minor-unit amount plus ISO 4217 currency.
-      properties:
-        amount:
-          type: integer
-        currency:
-          type: string
-          examples:
-          - EUR
-    PaymentHandoff:
-      type: object
-      properties:
-        paymentForm:
-          type: string
-        paymentRequest:
-          $ref: '#/components/schemas/PaymentRequest'
-    OrderState:
-      type: integer
-      description: Order lifecycle state, per the blueprint's table. 1 = Cart (ongoing order, user is shopping); 2 = Cart locked (user clicked "Pay", payment form generated on PSP side); 3 = Pending (payment in progress, awaiting PSP feedback); 4 = Confirmed (payment successful); 5 = Shipped (distribution over, member got the order); 7 = Canceled (payment denied or canceled). States 6 and 8 are marked n/a in the source.
-      enum:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 7
   securitySchemes:
     oauth2:
       type: oauth2
