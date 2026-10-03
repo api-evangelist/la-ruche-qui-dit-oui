@@ -74,6 +74,23 @@ paths:
                 error: invalid_grant
 components:
   schemas:
+    RefreshTokenGrantRequest:
+      type: object
+      required:
+      - grant_type
+      - refresh_token
+      - client_id
+      - client_secret
+      properties:
+        grant_type:
+          type: string
+          const: refresh_token
+        refresh_token:
+          type: string
+        client_id:
+          type: string
+        client_secret:
+          type: string
     PasswordGrantRequest:
       type: object
       required:
@@ -94,6 +111,13 @@ components:
           type: string
         password:
           type: string
+    OAuthError:
+      type: object
+      properties:
+        error:
+          type: string
+          examples:
+          - invalid_grant
     TokenResponse:
       type: object
       properties:
@@ -112,30 +136,6 @@ components:
           - 'null'
           description: Null in the documented example; no scope registry is published.
         refresh_token:
-          type: string
-    OAuthError:
-      type: object
-      properties:
-        error:
-          type: string
-          examples:
-          - invalid_grant
-    RefreshTokenGrantRequest:
-      type: object
-      required:
-      - grant_type
-      - refresh_token
-      - client_id
-      - client_secret
-      properties:
-        grant_type:
-          type: string
-          const: refresh_token
-        refresh_token:
-          type: string
-        client_id:
-          type: string
-        client_secret:
           type: string
   securitySchemes:
     oauth2:
