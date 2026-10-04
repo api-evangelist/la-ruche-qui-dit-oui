@@ -115,6 +115,57 @@ paths:
                 $ref: '#/components/schemas/OrderError'
 components:
   schemas:
+    PaymentRequest:
+      type: object
+      description: Payment service provider endpoint plus the pre-signed payload.
+      properties:
+        url:
+          type: string
+          format: uri
+        data:
+          type: string
+    Money:
+      type: object
+      description: Minor-unit amount plus ISO 4217 currency.
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+          examples:
+          - EUR
+    OrderList:
+      type: object
+      properties:
+        count:
+          type: integer
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    PaymentHandoff:
+      type: object
+      properties:
+        paymentForm:
+          type: string
+        paymentRequest:
+          $ref: '#/components/schemas/PaymentRequest'
+    PaymentRedirectUrls:
+      type: object
+      required:
+      - urlAccept
+      - urlDecline
+      - urlCancel
+      properties:
+        urlAccept:
+          type: string
+          format: uri
+        urlDecline:
+          type: string
+          format: uri
+        urlCancel:
+          type: string
+          format: uri
     Order:
       type: object
       properties:
@@ -147,57 +198,6 @@ components:
         paymentForm:
           type: string
           description: Pre-rendered HTML form for the payment service provider.
-        paymentRequest:
-          $ref: '#/components/schemas/PaymentRequest'
-    Money:
-      type: object
-      description: Minor-unit amount plus ISO 4217 currency.
-      properties:
-        amount:
-          type: integer
-        currency:
-          type: string
-          examples:
-          - EUR
-    PaymentRedirectUrls:
-      type: object
-      required:
-      - urlAccept
-      - urlDecline
-      - urlCancel
-      properties:
-        urlAccept:
-          type: string
-          format: uri
-        urlDecline:
-          type: string
-          format: uri
-        urlCancel:
-          type: string
-          format: uri
-    PaymentRequest:
-      type: object
-      description: Payment service provider endpoint plus the pre-signed payload.
-      properties:
-        url:
-          type: string
-          format: uri
-        data:
-          type: string
-    OrderList:
-      type: object
-      properties:
-        count:
-          type: integer
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
-    PaymentHandoff:
-      type: object
-      properties:
-        paymentForm:
-          type: string
         paymentRequest:
           $ref: '#/components/schemas/PaymentRequest'
     OrderError:

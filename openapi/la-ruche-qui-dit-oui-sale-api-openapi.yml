@@ -71,16 +71,33 @@ paths:
                   availableStock: unlimited
 components:
   schemas:
-    Money:
+    Offer:
       type: object
-      description: Minor-unit amount plus ISO 4217 currency.
+      properties:
+        id:
+          type: integer
+        count:
+          type:
+          - integer
+          - 'null'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        price:
+          $ref: '#/components/schemas/Money'
+        availableStock:
+          type:
+          - string
+          - integer
+          description: Documented example uses the string `unlimited`.
+    StorageLife:
+      type: object
       properties:
         amount:
-          type: integer
-        currency:
+          type: string
+        unit:
           type: string
           examples:
-          - EUR
+          - days
     Product:
       type: object
       properties:
@@ -119,40 +136,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offer'
-    StorageLife:
-      type: object
-      properties:
-        amount:
-          type: string
-        unit:
-          type: string
-          examples:
-          - days
-    Offer:
-      type: object
-      properties:
-        id:
-          type: integer
-        count:
-          type:
-          - integer
-          - 'null'
-        quantity:
-          $ref: '#/components/schemas/Quantity'
-        price:
-          $ref: '#/components/schemas/Money'
-        availableStock:
-          type:
-          - string
-          - integer
-          description: Documented example uses the string `unlimited`.
-    Quantity:
-      type: object
-      properties:
-        amount:
-          type: integer
-        unit:
-          type: string
     ProductType:
       type: object
       properties:
@@ -166,6 +149,23 @@ components:
           type: string
           examples:
           - weight
+    Money:
+      type: object
+      description: Minor-unit amount plus ISO 4217 currency.
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+          examples:
+          - EUR
+    Quantity:
+      type: object
+      properties:
+        amount:
+          type: integer
+        unit:
+          type: string
   securitySchemes:
     oauth2:
       type: oauth2

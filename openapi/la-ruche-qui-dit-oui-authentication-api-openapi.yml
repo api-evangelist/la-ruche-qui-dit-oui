@@ -91,6 +91,32 @@ components:
           type: string
         client_secret:
           type: string
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds. Documented example is 3600.
+        token_type:
+          type: string
+          examples:
+          - bearer
+        scope:
+          type:
+          - string
+          - 'null'
+          description: Null in the documented example; no scope registry is published.
+        refresh_token:
+          type: string
+    OAuthError:
+      type: object
+      properties:
+        error:
+          type: string
+          examples:
+          - invalid_grant
     PasswordGrantRequest:
       type: object
       required:
@@ -110,32 +136,6 @@ components:
         username:
           type: string
         password:
-          type: string
-    OAuthError:
-      type: object
-      properties:
-        error:
-          type: string
-          examples:
-          - invalid_grant
-    TokenResponse:
-      type: object
-      properties:
-        access_token:
-          type: string
-        expires_in:
-          type: integer
-          description: Token lifetime in seconds. Documented example is 3600.
-        token_type:
-          type: string
-          examples:
-          - bearer
-        scope:
-          type:
-          - string
-          - 'null'
-          description: Null in the documented example; no scope registry is published.
-        refresh_token:
           type: string
   securitySchemes:
     oauth2:
