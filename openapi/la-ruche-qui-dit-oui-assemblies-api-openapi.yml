@@ -44,6 +44,15 @@ paths:
           description: 'Missing or invalid bearer token. Observed live 2026-07-19 with `WWW-Authenticate: Bearer`.'
 components:
   schemas:
+    Memberships:
+      type: object
+      properties:
+        isMember:
+          type: boolean
+        hivesAsMember:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hive'
     Hive:
       type: object
       description: An assembly ("hive") the member belongs to.
@@ -59,15 +68,6 @@ components:
         joinedAt:
           type: string
           format: date-time
-    Memberships:
-      type: object
-      properties:
-        isMember:
-          type: boolean
-        hivesAsMember:
-          type: array
-          items:
-            $ref: '#/components/schemas/Hive'
   securitySchemes:
     oauth2:
       type: oauth2

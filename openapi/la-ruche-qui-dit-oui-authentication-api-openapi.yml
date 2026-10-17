@@ -74,6 +74,26 @@ paths:
                 error: invalid_grant
 components:
   schemas:
+    PasswordGrantRequest:
+      type: object
+      required:
+      - grant_type
+      - client_id
+      - client_secret
+      - username
+      - password
+      properties:
+        grant_type:
+          type: string
+          const: password
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
     RefreshTokenGrantRequest:
       type: object
       required:
@@ -117,26 +137,6 @@ components:
           type: string
           examples:
           - invalid_grant
-    PasswordGrantRequest:
-      type: object
-      required:
-      - grant_type
-      - client_id
-      - client_secret
-      - username
-      - password
-      properties:
-        grant_type:
-          type: string
-          const: password
-        client_id:
-          type: string
-        client_secret:
-          type: string
-        username:
-          type: string
-        password:
-          type: string
   securitySchemes:
     oauth2:
       type: oauth2
