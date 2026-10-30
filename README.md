@@ -64,6 +64,113 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-La Ruche qui dit Oui! is a company surfaced as a portfolio company of union-square-ventures and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+La Ruche qui dit Oui! is a French direct-from-farmer food marketplace, founded in Paris in 2010 and known in English-speaking markets as The Food Assembly. It connects members with local and European producers through neighbourhood assemblies ("ruches" / hives) and, since a May 2025 merger with CrowdFarming, through direct home delivery of seasonal boxes, subscriptions and harvest "adoptions" in which a member reserves the output of a specific tree, hive or plot for a season. The company operated a public member-facing REST API documented as the Food Assembly API — OAuth 2 token issuance, assembly membership, distribution product and offer listings, and the basket/order payment flow — published as an API Blueprint in the lrqdo/developer repository. That developer documentation has not been updated since 2017, and there is no current developer portal, but the API host remains live behind bearer authentication.
 
-Backed by: union-square-ventures — https://laruchequiditoui.fr
+**Areas:** Company · Food · Agriculture · Marketplace · E-Commerce · Local Food · Sustainability · France
+
+## La Ruche qui dit Oui! on APIs.io
+
+Everything profiled for La Ruche qui dit Oui! is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/la-ruche-qui-dit-oui/](https://apis.io/providers/la-ruche-qui-dit-oui/)** — or go straight to one of the APIs or properties below.
+
+### APIs (4)
+
+- [La Ruche qui dit Oui! Assemblies API](https://apis.io/apis/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui-assemblies-api/) — Assembly ("hive") membership for the authenticated member.
+- [La Ruche qui dit Oui! Authentication API](https://apis.io/apis/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui-authentication-api/) — OAuth 2 token issuance.
+- [La Ruche qui dit Oui! Orders API](https://apis.io/apis/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui-orders-api/) — Basket, orders and payment.
+- [La Ruche qui dit Oui! Sale API](https://apis.io/apis/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui-sale-api/) — Products and offers on sale for a distribution.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [la-ruche-qui-dit-oui](https://apis.io/servers/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui/)
+
+#### Collections (4)
+
+Postman and Open Collection request collections.
+
+- [The Food Assembly Assemblies API](https://apis.io/collections/la-ruche-qui-dit-oui/open-la-ruche-qui-dit-oui-assemblies-api/)
+- [The Food Assembly Assemblies Authentication API](https://apis.io/collections/la-ruche-qui-dit-oui/open-la-ruche-qui-dit-oui-authentication-api/)
+- [The Food Assembly Assemblies Orders API](https://apis.io/collections/la-ruche-qui-dit-oui/open-la-ruche-qui-dit-oui-orders-api/)
+- [The Food Assembly Assemblies Sale API](https://apis.io/collections/la-ruche-qui-dit-oui/open-la-ruche-qui-dit-oui-sale-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [La Ruche Qui Dit Oui Api Overlay](https://apis.io/overlays/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui-api-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [La Ruche Qui Dit Oui Authentication](https://apis.io/security/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui-authentication/)
+- [La Ruche Qui Dit Oui Domain Security](https://apis.io/security/la-ruche-qui-dit-oui/la-ruche-qui-dit-oui-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://laruchequiditoui.fr)
+- [Sign up](https://laruchequiditoui.fr/fr/auth)
+- [Support](https://support.crowdfarming.com/l/fr)
+- [Blog](https://laruchequiditoui.fr/fr/what-the-field/)
+- [Terms of service](https://laruchequiditoui.fr/fr/tos)
+- [GitHub](https://github.com/lrqdo)
+
+## API Evangelist rating
+
+**Kin Score 24.3** — emerging · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 78.6 |
+| Contract quality | 13.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 2.6 |
+| Developer ergonomics | 37.5 |
+| Access clarity | 23.7 |
+
+**Agent readiness 27.2** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 20.6** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/la-ruche-qui-dit-oui/](https://apis.io/providers/la-ruche-qui-dit-oui/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for La Ruche qui dit Oui!: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/la-ruche-qui-dit-oui/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
